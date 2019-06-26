@@ -1,6 +1,6 @@
 ---
 id: move-paper
-title: Move: A Language With Programmable Resources
+title: Move: 可编程资源语言
 ---
 
 <!-- hide the table of contents --><style>.toc-headings {display: none !important; visibility: hidden !important;}</style>

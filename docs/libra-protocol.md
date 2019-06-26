@@ -1,6 +1,6 @@
 ---
 id: libra-protocol
-title: Libra Protocol: Key Concepts
+title: Libra 协议核心概念
 ---
 
 

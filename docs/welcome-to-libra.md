@@ -1,6 +1,6 @@
 ---
 id: welcome-to-libra
-title: Welcome
+title: 来到 Libra 世界
 ---
 
 **Welcome to the Libra developer site!** Libra’s mission is to enable a simple global currency and financial infrastructure that empowers billions of people.

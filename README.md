@@ -1,9 +1,8 @@
-<a href="https://developers.libra.org">
+<a href="https://learnblochain.cn/docs/libra/">
 	<img width="200" src="./libra.png" alt="Libra Logo" />
 </a>
 
 <hr/>
-
 [![CircleCI](https://circleci.com/gh/libra/libra.svg?style=shield)](https://circleci.com/gh/libra/libra)
 [![License](https://img.shields.io/badge/license-Apache-green.svg)](LICENSE.md)
 

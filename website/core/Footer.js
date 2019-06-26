@@ -16,30 +16,24 @@ function SocialFooter(props) {
 
   return (
     <div className="footerSection">
-      <h5>Social</h5>
+      <h5>关注我们</h5>
       <div className="social">
         <a
-          className="github-button" // part of the https://buttons.github.io/buttons.js script in siteConfig.js
-          href={repoUrl}
-          data-count-href={`${repoUrl}/stargazers`}
-          data-show-count="true"
-          data-count-aria-label="# stargazers on GitHub"
-          aria-label="Star Libra on GitHub">
-          {projectName}
+          className="twitter-follow-button" // part of the https://buttons.github.io/buttons.js script in siteConfig.js
+          href={"https://img.learnblockchain.cn/qrcode/xiaona_qrcode2.jpeg"}
+          data-show-count="false"
+          aria-label="weixin">
+          备注“Libra”微信群：upchainedu
         </a>
       </div>
       <div className="social">
         <a
-          href={"https://twitter.com/libradev?ref_src=twsrc%5Etfw"}
+          href={"https://www.zhihu.com/people/xiong-li-bing/activities"}
           className={"twitter-follow-button"}
           data-show-count={false}>
-            Follow @libradev
+            关注知乎
         </a>
-        <script
-          async
-          src={`${baseUrl}js/twitter-widgets.js`}
-          charSet={"utf-8"}
-        />
+
       </div>
     </div>
   );
@@ -85,16 +79,11 @@ class Footer extends React.Component {
             <a href={this.docUrl('the-libra-blockchain-paper')}>Libra Blockchain</a>
             <a href={this.docUrl('life-of-a-transaction')}>Life of a Transaction</a>
             <p />
-            <h5>Try Libra Core </h5>
-            <a href={this.docUrl('my-first-transaction')}>My First Transaction</a>
-            <a href={this.docUrl('move-overview')}>Getting Started With Move</a>
           </div>
           <div className="footerSection">
-            <h5>Policies</h5>
-            <a href={this.docUrl('policies/privacy-policy')}>Privacy Policy</a>
-            <a href={this.docUrl('policies/terms-of-use')}>Terms of Use</a>
-            <a href={this.docUrl('policies/cookies-policy')}>Cookies Policy</a>
-            <a href={this.docUrl('policies/code-of-conduct')}>Code of Conduct</a>
+          <h5>Try Libra Core </h5>
+            <a href={this.docUrl('my-first-transaction')}>My First Transaction</a>
+            <a href={this.docUrl('move-overview')}>Getting Started With Move</a>
           </div>
           <SocialFooter config={this.props.config} />
         </section>
@@ -102,7 +91,7 @@ class Footer extends React.Component {
           {this.props.config.copyright && (
             <span>{this.props.config.copyright}</span>
           )}{' '}
-          &copy; Libra Association
+         Libra 中文文档 | 深入浅出区块链
         </section>
         <CookieBanner />
       </footer>

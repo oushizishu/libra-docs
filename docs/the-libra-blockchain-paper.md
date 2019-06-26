@@ -1,6 +1,6 @@
 ---
 id: the-libra-blockchain-paper
-title: The Libra Blockchain
+title: Libra 区块链
 ---
 
 <!-- hide the table of contents --><style>.toc-headings {display: none !important; visibility: hidden !important;}</style>

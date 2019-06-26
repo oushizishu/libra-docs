@@ -1,6 +1,6 @@
 ---
 id: libra-core-overview
-title: Libra Core Overview
+title: Libra Core 概要
 ---
 
 Libra Core is the official name for the open-source implementation of the Libra protocol published by the Libra Association.

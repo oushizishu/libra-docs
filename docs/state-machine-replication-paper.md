@@ -1,6 +1,6 @@
 ---
 id: state-machine-replication-paper
-title: State Machine Replication in the Libra Blockchain
+title: Libra区块链中的状态机复制
 ---
 
 <!-- hide the table of contents --><style>.toc-headings {display: none !important; visibility: hidden !important;}</style>

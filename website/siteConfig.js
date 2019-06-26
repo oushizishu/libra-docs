@@ -11,15 +11,15 @@
 const markdownPlugins = require(`${process.cwd()}/markdownPlugins.js`);
 
 // Define this so it can be easily modified in scripts (to host elsewhere)
-const baseUrl = '/';
+const baseUrl = '/docs/libra/';
 
 // List of projects/orgs using your project for the users page.
 const users = [];
 
 const siteConfig = {
-  title: 'Libra',
-  tagline: "Libra’s mission is to enable a simple global currency and financial infrastructure that empowers billions of people.",
-  url: 'https://developers.libra.org',
+  title: 'Libra 中文文档|深入浅出区块链',
+  tagline: "Libra 为数十亿人打造的全球货币和金融基础设施。",
+  url: 'https://learnblockchain.cn',
   baseUrl: baseUrl,
   cleanUrl: true, // No .html extensions for paths
 
@@ -33,10 +33,11 @@ const siteConfig = {
 
   // links that will be used in the header navigation bar
   headerLinks: [
-    {doc: 'welcome-to-libra', label: 'Documentation'},
-    {href: 'https://community.libra.org', label: 'Community'},
+    {href: 'https://learnblockchain.cn', label: '首页'},
+    {doc: 'welcome-to-libra', label: '文档'},
+    
     {blog: true, label: "Blog" },
-    {href: 'https://libra.org', label: 'libra.org'},
+    {href: 'https://libra.org', label: 'libra官网'},
     {href: 'https://github.com/libra/libra', label: 'GitHub'}
     // {search: false}, // position search box to the very right
   ],
@@ -95,7 +96,7 @@ const siteConfig = {
   docsSideNavCollapsible: false,
 
   // URL for editing docs
-  editUrl: 'https://github.com/libra/website/edit/master/docs/',
+  editUrl: 'https://github.com/lbc-team/libra-docs/edit/lbc/docs/',
 
   // Open Graph and Twitter card images
   ogImage: 'img/libra.png',

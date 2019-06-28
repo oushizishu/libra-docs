@@ -8,12 +8,18 @@
 Libra 开发者文档由深入浅出区块链社区、磨链社区、HiBlock社区发起翻译，欢迎大家加入。
 Libra 实现了一个能为数十亿人提供金融基础设施的去中心化的，可编程的数据库。
 
-## Note to Developers
-* Libra Core is a prototype.
+## 如何贡献
+
+文档托管的GitHub：
+有兴趣参与的联系Tiny 熊（微信：xlbxiong），邀请你加入到GitHub 群组。
+
+
+
+## 开发者注意
+* Libra Core 仍然在原型阶段.
 * The APIs are constantly evolving and designed to demonstrate types of functionality. Expect substantial changes before the release.
 * We've launched a testnet that is a live demonstration of an early prototype of the Libra Blockchain software.
 
-## 贡献
 
 
 
@@ -51,12 +57,6 @@ Libra 实现了一个能为数十亿人提供金融基础设施的去中心化�
 * [Storage](https://learnblockchain.cn/docs/libra/docs/crates/storage)
 * [Virtual Machine](https://learnblockchain.cn/docs/libra/docs/crates/vm)
 
-
-## Community
-
-Join us on the [Libra Discourse](https://community.libra.org)
-
-Get the latest updates to our project by signing up to our [newsletter](https://learnblockchain.cn/docs/libra/newsletter_form).
 
 ## License
 

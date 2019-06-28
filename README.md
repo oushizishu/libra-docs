@@ -10,9 +10,10 @@ Libra 实现了一个能为数十亿人提供金融基础设施的去中心化�
 
 ## 如何贡献
 
-文档托管的GitHub：
-有兴趣参与的联系Tiny 熊（微信：xlbxiong），邀请你加入到GitHub 群组。
+文档托管的GitHub：https://github.com/lbc-team/libra-docs
 
+所有的文档都是通过Mkdown编写，参考[翻译说明](Translate.md)。
+有兴趣参与的联系Tiny 熊（微信：xlbxiong），邀请你加入到GitHub 群组。
 
 
 ## 开发者注意

@@ -26,7 +26,7 @@ title: Libra上的第一笔交易
 执行以下步骤将交易提交到 Libra 测试网络 testnet上的验证节点：
 
 1. [克隆并构建 Libra Core](#克隆并编译-libra-core).
-2. [编译 Libra  CLI客户端并连接到testnet](#编译-libra-cli-客户端并连接到testnet).
+2. [编译 Libra CLI客户端并连接到testnet](#编译-libra-cli-客户端并连接到testnet).
 3. [创建Alice和Bob的帐户](#创建alice和bob的账户).
 4. [铸币并添加到Alice和Bob的账户](#添加libra-币到alice和bob账户).
 5. [提交交易](#提交交易).
@@ -58,7 +58,7 @@ cd libra
 
 如果您的安装失败，详见[故障排除说明](#安装)
 
-## 编译-libra-cli-客户端并连接到testnet
+## 编译 Libra Cli 客户端并连接到testnet
 
 为了连接到 Libra testnet 网络的验证器节点，如下图所示运行客户端：
 

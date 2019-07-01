@@ -173,7 +173,7 @@ User account index: 1, address: 8337aac709a41fe6be03cad8878a0d4209740b1608f8a815
 
 ## 添加Libra Coin到Alice和Bob账户
 
-Minting and adding coins to accounts on testnet is done via Faucet. Faucet is a service that runs along with the testnet. This service only exists to facilitate minting coins for testnet and will not exist for [mainnet](reference/glossary.md#mainnet). It creates Libra with no real-world value. Assuming you have [created Alice’s and Bob’s account](#create-alice-s-and-bob-s-account), with index 0 and index 1 respectively, you can follow the steps below to add Libra to both accounts.
+在testnet上创建和铸币是通过Faucet完成的。 Faucet是一种与testnet一起运行的服务。 此服务仅用于为testnet创建硬币，并没有在[主网](reference/glossary.md#mainnet). It creates Libra with no real-world value. Assuming you have [created Alice’s and Bob’s account](#create-alice-s-and-bob-s-account), with index 0 and index 1 respectively, you can follow the steps below to add Libra to both accounts.
 
 ### Step 1: Add 110 Libra to Alice’s Account
 

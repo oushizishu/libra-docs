@@ -309,63 +309,63 @@ Balance is: 62
 
 ## 故障排除
 
-### Setup
+### 安装
 
-* Update Rust:
-    * Run `rustup update` from your libra directory.
-* Re-run setup script from your libra directory:
+* 更新ust:
+    * 在libra目录运行 `rustup update` .
+* 从libra目录重新运行安装脚本:
     * `./scripts/dev_setup.sh`
 
-### Client Build and Run
+### 客户端编译运行
 
-If you are experiencing build failures, try to remove the cargo lock file from the libra directory:
+如果您遇到构建失败，请尝试从libra目录中删除cargo.lock文件：
 
 * `rm Cargo.lock`
 
-If your client did not connect to the testnet:
+如果您的客户端没有连接到testnet：
 
-* Check your internet connection.
-* Ensure that you are using the latest version of the client. Pull the latest Libra Core and rerun the client:
+* 检查网络连接。
+* 确保您使用的是最新版本的客户端。 拉取最新的Libra Core并重新运行客户端：
     * `./scripts/cli/start_cli_testnet.sh`
 
 
-### Minting and Adding Money to Account
+### 铸币添加到账户
 
-* If the validator node you connected to on testnet is unavailable, you will get a “Server unavailable” message as shown below:
+* 如果您在testnet上连接的验证程序节点不可用，您将收到“服务器不可用”消息，如下所示：
 
   ```plaintext
   libra% account mint 0 110
   >> Minting coins
   [ERROR] Error minting coins: Server unavailable, please retry and/or check **if** host passed to the client is running
   ```
-* If your balance was not updated after submitting a transaction, wait a moment and query the balance again. There may be a delay if the blockchain is experiencing a very high volume of transactions.  If your balance still is not updated, please try minting again.
+* 如果您在提交交易后未更新余额，请稍等片刻再次查询余额。 如果区块链上大量交易在提交，那么可能会有延迟。 如果您的余额仍未更新，请再次尝试铸币。
 
-* To check if an account exists, query the account state. For an account with index 0 enter this:
+* 要检查帐户是否存在，请查询帐户状态。 对于索引为0的帐户，请输入以下内容：
 
   `libra% query account_state 0`
 
-### The Transfer Command
+### 交易命令
 
-If the testnet validator node (your client was connected to) is unavailable or your connection to the testnet has timed-out, you will see this error:
+如果testnet验证器节点（客户端已确定连接了）不可用或您与testnet的连接已超时，您将看到此错误：
 
 ```plaintext
 libra% transfer 0 1 10
 >> Transferring
 [ERROR] Failed to perform transaction: Server unavailable, please retry and/or check if host passed to the client is running
 ```
-To troubleshoot transfer errors:
+解决交易故障:
 
-* Check the connection to testnet.
-* Query the sender account to make sure it exists. Use the following command for an account with index 0:
+* 检查testnet的连接。
+* 查询发件人帐户以确保其确实存在。 对索引为0的帐户使用以下命令：
     * `query account_state 0`
-* You can try quitting the client using `quit` or `q!`, and rerun the following command to connect to the testnet:
-    * `./scripts/cli/start_cli_testnet.sh` from the libra directory
+* 使用`quit` 或 `q!`退出, 然后重新运行以下命令以连接到testnet：
+    * 从libre目录运行 `./scripts/cli/start_cli_testnet.sh` 
 
-## Sample Outputs of Additional Query Commands
+## 查询命令输出示例
 
-### Query Transaction by Account and Sequence Number
+### 附加查询命令的示例输出
 
-This example will query for a single transaction's details using the account and sequence number.
+此示例将使用帐户和序列号查询单个交易的详细信息。
 
 ```plaintext
 libra% query txn_acc_seq 0 0 true
@@ -396,11 +396,11 @@ ContractEvent { access_path: AccessPath { address: 3ed8e5fafae4147b2a105a0be2f81
 ContractEvent { access_path: AccessPath { address: 8337aac709a41fe6be03cad8878a0d4209740b1608f8a81566c9a7d4b95a2ec7, type: Resource, hash: "217da6c6b3e19f1825cfb2676daecce3bf3de03cf26647c78df00b371b25cc97", suffix: "/received_events_count/" } , index: 0, event_data: AccountEvent { account: 3ed8e5fafae4147b2a105a0be2f81972883441cfaaadf93fc0868e7a0253c4a8, amount: 10000000 } }
 ```
 
-Note that the transaction amount is shown in microlibra.
+请注意，交易金额以microlibra单位显示.
 
-### Query Events
+### 查询事件
 
-In the following example, we will query for “sent” events from the account at reference index 0.  You will notice there is a single event since we sent one transaction from this account.  The proof of the current state is also returned so that verification can be performed that no events are missing - this is done when the query does not return “limit” events.
+在以下示例中，我们将从索引为0的帐户查询“已发送”事件。您将注意到，我们从此帐户发送了一个交易，所以只有一个交易。 还返回当前区块链状态。以便可执行验证 ，确保没有丢失任何交易- 这在查询没有返回“限制”交易时完成。
 
 ```plaintext
 libra% query event 0 sent 0 true 10
@@ -459,9 +459,9 @@ Last event state: Some(
 )
 ```
 
-### Query Account State
+### 查询账户状态
 
-In this example, we will query for the state of a single account.
+在此示例中，我们将查询单个帐户的状态。
 
 ```plaintext
 libra% query account_state 0
@@ -485,33 +485,33 @@ Latest account state is:
  Blockchain Version: 3
 ```
 
-## Run a Local Validator Node
+## 运行本地验证器节点
 
-To start a validator node locally on your computer and create your own local blockchain network (not connected to the Libra testnet), ensure that you have run the build script as described in [Setup Libra Core](#setup-libra-core), change to the root directory of the Libra Core repository, and run `libra_swarm` as shown below:
+要在本地计算机上启动验证程序节点，并创建本地区块链网络（未连接到Libra testnet），请确保您已经按照[安装Libra Core](#setup-libra-core), 切换到Libra Core库的根目录，然后运行 `libra_swarm` 如下显示:
 
 ```bash
 $ cd ~/libra
 $ cargo run -p libra_swarm -- -s
 ```
 
-`-p libra_swarm` - causes cargo to run the libra_swarm package, which starts a local blockchain consisting of one node.
+`-p libra_swarm` - 使用cargo运行libra_swarm包，该包启动由一个节点组成的本地区块链。
 
-`-s` option starts a local client to connect to the local blockchain.
+`-s` 启动本地客户端以连接到本地区块链。
 
-To see additional options for starting a node and connecting to the Libra Blockchain, run:
+要查看启动节点和连接Libra区块链的其他选项，请运行：
 
 `$ cargo run -p libra_swarm -- -h`
 
-The cargo run command may take some time to run. If the execution of this command completes without errors, an instance of the Libra CLI client and a Libra validator node is running on your system. Upon successful execution, you should see an output containing the CLI client menu and the `libra%` prompt.
+Cargo命令可能需要一些时间才能执行完成。 如果此命令的执行完成且没有错误，则系统上运行Libra CLI客户端实例和Libra验证器节点。 同时应该能看到包含CLI客户端菜单和`libra%` 提示的输出.
 
-## Life of a Transaction
+## 交易生命周期
 
-Once you have executed your first transaction, you may refer to the document [Life of a Transaction](life-of-a-transaction.md) for:
+执行完第一笔交易后，您可以参考该文件 [交易生命周期](life-of-a-transaction.md) for:
 
-* A look "under the hood" at the lifecycle of a transaction from submission to execution.
-* An understanding of the interactions between each logical component of a Libra validator as transactions get submitted and executed in the Libra ecosystem.
+* 从“底层”说明交易从提交到执行的整个生命周期
+* 在Libra生态系统中提交和执行交易时，了解Libra验证器的每个逻辑组件之间的交互。
 
-## Reference
+## 参考
 
 * [Welcome page](welcome-to-libra.md).
 * [Libra Protocol: Key Concepts](libra-protocol.md) &mdash; Introduces you to the fundamental concepts of the Libra protocol.

@@ -5,9 +5,9 @@ title: Libra区块链中的状态机复制
 
 <!-- hide the table of contents --><style>.toc-headings {display: none !important; visibility: hidden !important;}</style>
 
-## Abstract
+## 摘要
 
-This report presents LibraBFT, a robust and efficient state machine replication system designed for the Libra Blockchain. LibraBFT is based on HotStuff, a recent protocol that leverages several decades of scientific advances in Byzantine fault tolerance (BFT) and achieves the strong scalability and security properties required by internet settings. LibraBFT further refines the HotStuff protocol to introduce explicit liveness mechanisms and provides a concrete latency analysis. To drive the integration with the Libra Blockchain, this document provides specifications extracted from a fully-functional simulator. These specifications include state replication interfaces and a communication framework for data transfer and state synchronization among participants. Finally, this report provides a formal safety proof that induces criteria to detect misbehavior of BFT nodes, coupled with a simple reward and punishment mechanism.
+本报告介绍了LibraBFT，这是一个针对Libra 区块链设计的强大高效的状态机复制系统。 LibraBFT基于HotStuff，这是最近的一项协议，利用拜占庭容错（BFT）数十年的科学进步，实现了互联网所需的强大的可扩展性和安全性。 LibraBFT进一步完善了HotStuff协议，引入了明确的活跃度机制，并提供了具体的延迟分析。 为了推动与Libra区块链的集成，本文档提供了从全功能模拟器中提取的规范。 这些规范包括状态复制接口和用于参与者之间的数据传输和状态同步的通信框架。 最后，本文档提供了一个正式的安全证明，它规定了检测BFT节点不良行为的标准，同时还有一个简单的奖励和惩罚机制。
 
 ### Downloads
 

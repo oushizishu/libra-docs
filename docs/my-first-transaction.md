@@ -3,72 +3,71 @@ id: my-first-transaction
 title: Libra上的第一笔交易
 ---
 
-This document will guide you through executing your first transaction on the Libra Blockchain. Before you follow the steps to execute your first transaction, we recommend that you read the following documents to familiarize yourself with the key aspects of the Libra ecosystem and the Libra protocol:
+本文档将指导您在Libra 区块链上执行您的第一笔交易。 在执行第一笔交易的步骤之前，我们建议您阅读以下文档，以熟悉Libra生态系统和Libra协议的关键方面：
 
-* [Welcome](welcome-to-libra.md)
-* [The Libra protocol: Key Concepts](libra-protocol.md)
+* [欢迎页](welcome-to-libra.md)
+* [Libra协议核心概念](libra-protocol.md)
 
-We provide a command line interface (CLI) client to interact with the blockchain.
+我们提供了一个命令行界面（CLI）客户端来与区块链进行交互。
 
-## Assumptions
+## 约定准备条件
 
-All commands in this document assume that:
+本文档中的所有命令均假定已经完成如下准备：
 
-* You are running on a Linux (Red Hat or Debian-based) or macOS system.
-* You have a stable connection to the internet.
-* `git` is installed on your system.
-* Homebrew is installed on a macOS system.
-* `yum`or `apt-get` is installed on a Linux system.
+* 您运行的是Linux（基于Red Hat或Debian）或macOS系统。
+* 可以稳定地连接到互联网。
+* `git` 已在您的系统上安装。
+* macOS上已安装Homebrew。
+* `yum`或者 `apt-get` 已在您的Linux系统上安装。
 
-## Steps to Submit a Transaction
+## 提交交易的步骤
 
-In this example, we'll download the necessary Libra components and execute a transaction between two users: Alice and Bob.
+在这个例子中，我们将下载必要的Libra组件并在两个用户（Alice和Bob）之间执行一个交易操作。
+执行以下步骤将交易提交到Libra testnet上的验证程序节点：
 
-Perform the following steps to submit a transaction to a validator node on the Libra testnet:
+1. [克隆并构建Libra Core](#clone-and-build-libra-core).
+2. [编译Libra CLI客户端并连接到testnet](#build-libra-cli-client-and-connect-to-the-testnet).
+3. [创建Alice和Bob的帐户](#create-alice-s-and-bob-s-account).
+4. [铸币并添加到Alice和Bob的账户](#add-libra-coins-to-alice-s-and-bob-s-accounts).
+5. [提交交易](#submit-a-transaction).
 
-1. [Clone and build Libra Core](#clone-and-build-libra-core).
-2. [Build the Libra CLI client and connect to the testnet](#build-libra-cli-client-and-connect-to-the-testnet).
-3. [Create Alice’s and Bob’s accounts](#create-alice-s-and-bob-s-account).
-4. [Mint coins and add to Alice’s and Bob’s accounts](#add-libra-coins-to-alice-s-and-bob-s-accounts).
-5. [Submit a transaction](#submit-a-transaction).
+## 克隆并编译Libra Core
 
-## Clone and Build Libra Core
-
-### Clone the Libra Core Repository
+### 克隆Libra Core库
 
 ```bash
 git clone https://github.com/libra/libra.git
 ```
 
-### Setup Libra Core
+### 安装Libra Core
 
-To setup Libra Core, change to the `libra` directory and run the setup script to install the dependencies, as shown below:
+要安装Libra Core，请切换到`libra`目录并运行安装脚本来安装相关的依赖项，如下所示：
 
 ```
 cd libra
 ./scripts/dev_setup.sh
 ```
-The setup script performs these actions:
+安装脚本执行以下操作：
 
-* Installs rustup &mdash; rustup is an installer for the Rust programming language, which Libra Core is implemented in.
-* Installs the required versions of the rust-toolchain.
-* Installs CMake &mdash; to manage the build process.
-* Installs protoc &mdash; a compiler for protocol buffers.
-* Installs Go &mdash; for building protocol buffers.
+* 安装rustup ＆mdash; rustup是Rust编程语言的安装程序，Libra Core是基于Rust实现的。
+* 安装版本所需的rust-toolchain.
+* 安装CMake &mdash; 用于编译项目。
+* 安装protoc &mdash; 缓冲区编译器。
+* 安装Go &mdash; 用于编译缓冲区编译器。
 
-If your setup fails, see [Troubleshooting](#setup)
+如果您的安装失败，详见[故障排除说明](#setup)
 
-## Build Libra CLI Client and Connect to the Testnet
+## 编译Libra CLI客户端并连接到Testnet
 
-To connect to a validator node running on the Libra testnet, run the client as shown below.
+运行客户端，连接到Libra testnet网络的验证器节点，如下图所示：
 
 ```bash
 ./scripts/cli/start_cli_testnet.sh
 ```
 
-This command builds and runs the client utilizing cargo (Rust’s package manager) and connects the client to a validator node on the testnet.
+使用cargo（Rust的包管理器）编译和运行客户端，并将客户端连接到testnet上的验证器节点。
 
-Once the client connects to a node on the testnet, you will see the following output.  To quit the client at any time, use the `quit` command.
+客户端连接到testnet上的节点后，您将看到以下输出。 要随时退出客户端，请使用`quit`命令。
 
 ```
 usage: <command> <args>
@@ -92,22 +91,21 @@ Please, input commands:
 
 libra%
 ```
-
-If you have problems building the client and connecting to the testnet, refer to [Troubleshooting](#client-build-and-run).
+如果您在编译运行客户端和连接到testnet时遇到问题，请参阅[故障排除说明](#client-build-and-run).
 
 <blockquote class="block_note">
 
-**Note**: If you would like to run a validator node locally on your system, follow the instructions in [Run a Local Validator Node](#run-a-local-validator-node). The instructions for creating accounts, minting coins, and performing a transaction are the same as that for a node on testnet.
+**注意**: 如果要在系统上本地运行验证器节点，请按照[运行本地验证](#run-a-local-validator-node)中的说明进行操作。 创建帐户，铸币和执行交易的说明与testnet上的节点相同。
 
 </blockquote>
 
-## Create Alice’s and Bob’s Account
+## 创建Alice和Bob的账户
 
-Once your client is connected to the testnet, you can run CLI commands to create new accounts.  We will walk you through creating accounts for two users (let's call them Alice and Bob).
+将客户端连接到testnet后，可以运行CLI命令来创建新帐户。这里为两个用户（Alice和Bob）创建帐户。
 
-### Step 1: Check If the CLI Client Is Running on Your System
+### 步骤1：检查CLI客户端是否在您的系统上运行
 
-A **libra%** command line prompt indicates that your Libra CLI client is running. To see the help information for the `account` command enter “account” as shown below:
+出现一个 **libra%** 命令行提示符表示您的Libra CLI客户端正在运行。 要查看`account`命令的帮助信息，请输入“account”，如下所示：
 
 ```plaintext
 libra% account
@@ -127,53 +125,53 @@ mint | mintb | m | mb <receiver account> <number of coins>
   Mint coins to the account. Suffix 'b' is for blocking
 ```
 
-### Step 2: Create Alice’s Account
+### 步骤2： 创建Alice账户
 
-Note that creating an account using the CLI does not update the blockchain, it just creates a local key-pair.
+请注意，使用CLI创建帐户不会更新区块链，只会创建本地密钥对。
 
-To create Alice’s account, enter this command:
+要创建Alice的帐户，请输入以下命令：
 
 `libra% account create`
 
-Sample output on success:
+成功后输出如下：
 
 ```plaintext
 >> Creating/retrieving next account from wallet
 Created/retrieved account #0 address 3ed8e5fafae4147b2a105a0be2f81972883441cfaaadf93fc0868e7a0253c4a8
 ```
 
-#0 is the index of Alice’s account, and the hex string is the address of Alice’s account. The index is just a way to refer to Alice’s account. The account index is a local CLI index that can be used in other CLI commands for users to conveniently refer to the accounts they have created. The index is meaningless to the blockchain. Alice’s account will be created on the blockchain only when either money is added to Alice’s account via minting, or money is transferred to Alice’s account via a transfer from another user. Note that you may also use the hex address in CLI commands. The account index is just a convenience wrapper around the account address.
+＃0是Alice帐户的索引，十六进制字符串是Alice帐户的地址。 索引只是引用Alice帐户的一种方式。 帐户索引是本地CLI索引，可以在其他CLI命令中使用，以便用户方便地引用他们创建的帐户。 该指数对区块链毫无意义。 只有当通过铸币将任何一笔钱添加到Alice的账户时，才会在区块链上创建Alice的账户，或者通过来自另一个用户的转账将钱转移到Alice的账户。 请注意，您也可以在CLI命令中使用十六进制地址。 帐户索引只是帐户地址的方便显示。
 
-### Step 3: Create Bob’s Account
+### 步骤3: 创建Bob的账户
 
-To create Bob’s account, repeat the account creation command:
+要创建Bob的帐户，请重复之前帐户创建命令：
 
 `libra% account create`
 
-Sample output on success:
+成功后输出如下：
 
 ```plaintext
 >> Creating/retrieving next account from wallet
 Created/retrieved account #1 address 8337aac709a41fe6be03cad8878a0d4209740b1608f8a81566c9a7d4b95a2ec7
 ```
 
-#1 is the index for Bob’s account, and the hex string is the address of Bob’s account.
-For more details on index refer to [Create Alice’s Account.](#step-2-create-alice-s-account)
+#1 是Bob帐户的索引，十六进制字符串是Bob帐户的地址。
+有关索引的更多详细信息，请参阅[创建Alice的账户](#step-2-create-alice-s-account)
 
-### Step 4 (Optional): List Accounts
+### 步骤4 (可选): 账户列表
 
-To list the accounts you have created, enter this command:
+要列出您创建的帐户，请输入以下命令：
 
 `libra% account list`
 
-Sample output on success:
+成功后输出如下：
 ```plaintext
 User account index: 0, address: 3ed8e5fafae4147b2a105a0be2f81972883441cfaaadf93fc0868e7a0253c4a8, sequence number: 0
 User account index: 1, address: 8337aac709a41fe6be03cad8878a0d4209740b1608f8a81566c9a7d4b95a2ec7, sequence number: 0
 ```
-The sequence number for an account indicates the number of transactions that have been sent from that account. It is incremented every time a transaction sent from that account is executed and stored in the blockchain. To know more, refer to [sequence number](reference/glossary.md#sequence-number).
+帐户中的序列号表示从该帐户发送的交易数。 每次从该帐户发送的交易被执行后并存储在区块链中时，它会递增。 要了解更多信息，请参阅 [序列号](reference/glossary.md#sequence-number).
 
-## Add Libra Coins to Alice’s and Bob’s Accounts
+## 添加Libra Coin到Alice和Bob账户
 
 Minting and adding coins to accounts on testnet is done via Faucet. Faucet is a service that runs along with the testnet. This service only exists to facilitate minting coins for testnet and will not exist for [mainnet](reference/glossary.md#mainnet). It creates Libra with no real-world value. Assuming you have [created Alice’s and Bob’s account](#create-alice-s-and-bob-s-account), with index 0 and index 1 respectively, you can follow the steps below to add Libra to both accounts.
 

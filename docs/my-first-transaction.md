@@ -173,72 +173,70 @@ User account index: 1, address: 8337aac709a41fe6be03cad8878a0d4209740b1608f8a815
 
 ## 添加Libra Coin到Alice和Bob账户
 
-在testnet上创建和铸币是通过Faucet完成的。 Faucet是一种与testnet一起运行的服务。 此服务仅用于为testnet创建硬币，并没有在[主网](reference/glossary.md#mainnet). It creates Libra with no real-world value. Assuming you have [created Alice’s and Bob’s account](#create-alice-s-and-bob-s-account), with index 0 and index 1 respectively, you can follow the steps below to add Libra to both accounts.
+在testnet上创建和铸币是通过Faucet完成的。 Faucet是一种与testnet一起运行的服务。 此服务仅用于为testnet创建硬币，并没有在[主网](reference/glossary.md#mainnet)上. 它创建的Libra Coin并没有真实的价值，假设[创建Alice和Bob的账户](#create-alice-s-and-bob-s-account), 分别使用了索引0和索引1，您可以按照以下步骤将Libra Coin添加到两个帐户。
 
-### Step 1: Add 110 Libra to Alice’s Account
+### 步骤1: 添加100个Libra到Alice账户
 
-To mint Libra and add to Alice’s account, enter this command:
+铸币Libra，并添加到Alice的帐户，输入以下命令:
 
 `libra% account mint 0 110`
 
-* 0 is the index of Alice’s account.
-* 110  is the amount of Libra to be added to Alice’s account.
+* 0 是Alice账户的索引号。
+* 110 是要添加到Alice账户的Libra数量。
 
-A successful account mint command will also create Alice’s account on the blockchain.
+账户成功运行铸币命令，也会在Libra区块链上创建Alice的账户。
 
-Sample output on success:
+成功后输出如下：
 
 ```plaintext
 >> Minting coins
 Mint request submitted
 ```
-Note that when the request is submitted, it means that it has been added to the mempool (of a validator node on testnet) successfully. It does not necessarily imply that it will be successfully completed. Later, we will query the account balance to confirm if minting was successful.
+请注意，提交请求时，这意味着它已成功添加到内存池（testnet上的验证程序节点）。 但并不一定意味着它将执行完成。 稍后，我们将查询帐户余额以确认铸币是否成功。
 
-If your account mint command did not submit your request successfully, refer to
-[Troubleshooting](#minting-and-adding-money-to-account)
+如果您的帐户铸币命令未成功提交您的请求，请参阅[故障排除说明](#minting-and-adding-money-to-account)
 
-### Step 2: Add 52 Libra to Bob’s Account
+### 步骤2: 添加52个Libra到Bob账户
 
-To mint Libra and add to Bob’s account, enter this command:
+铸币Libra，并添加到Bob的帐户，输入以下命令:
 
 `libra% account mint 1 52`
 
-* 1 is the index of Bob’s account.
-* 52 is the amount of Libra to be added to Bob’s account.
-* A successful account mint command will also create Bob’s account on the blockchain. Another way to create Bob’s account on the blockchain is to transfer money from Alice’s account to Bob’s account.
+* 1 是Bob账户的索引号。
+* 52 是要添加到Bob账户的Libra数量。
+* 账户成功运行铸币命令，也会在Libra区块链上创建Bob的账户，在区块链上创建Bob帐户的另一种方法是将钱从Alice的帐户交易到Bob的帐户。
 
-Sample output on success:
+成功后输出如下：
 
 ```plaintext
 >> Minting coins
 Mint request submitted
 ```
-If your account mint command did not submit your request successfully, refer to
-[Troubleshooting](#minting-and-adding-money-to-account)
+如果您的帐户铸币命令未成功提交您的请求，请参阅[故障排除说明](#minting-and-adding-money-to-account)
 
-### Step 3: Check the Balance
+### 步骤3: 余额检查
 
-To check the balance in Alice’s account, enter this command:
+检查Alice账户的余额，运行如下命令：
 
 `libra% query balance 0`
 
-Sample output on success:
+成功后输出如下：
 
 `Balance is: 110`
 
-To check the balance in Bob’s account, enter this command:
+检查Bob账户的余额，运行如下命令：
 
 `libra% query balance 1`
 
-Sample output on success:
+成功后输出如下：
 
 `Balance is: 52`
 
-## Submit a Transaction
+## 提交交易
 
-Before we submit a transaction to transfer Libra from Alice’s account to Bob’s account, we will query the sequence number of each account. This will help us understand how executing a transaction changes the sequence number of each account.
+在我们提交将Libra从Alice的账户转移到Bob的账户的交易之前，我们将查询每个账户的序列号。 这将有助于我们了解交易执行过程中如何更改每个帐户的序列号。
 
-### Query the Accounts’ Sequence Numbers
+### 查询账户的序列号
 
 ```plaintext
 libra% query sequence 0
@@ -249,19 +247,19 @@ libra% query sequence 1
 Sequence number is: 0
 ```
 
-In `query sequence 0`, 0 is the index of Alice’s account. A sequence number of 0 for both Alice’s and Bob’s accounts indicates that no transactions from either Alice’s or Bob’s account has been executed so far.
+在 `query sequence 0`, 0是Alice的帐户的索引。 Alice和Bob的帐户的序列号都为0，即表示到目前为止尚未执行Alice或Bob的帐户中的任何交易。
 
-### Transfer Money
+### 转账
 
-To submit a transaction to transfer 10 Libra from Alice’s account to Bob’s account, enter this command:
+提交一个从Alice账户转账10个Libra到Bob账户的交易，输入以下命令：
 
 `libra% transfer 0 1 10`
 
-* 0 is the index of Alice’s account.
-* 1 is the index of Bob’s account.
-* 10 is the number of Libra to transfer from Alice’s account to Bob’s account.
+* 0是Alice的帐户索引。
+* 1是Bob的帐户索引。
+* 10是从Alice的账户交易到Bob账户的Libra数量。
 
-Sample output on success:
+成功后输出如下：
 
 ```plaintext
 >> Transferring
@@ -269,19 +267,19 @@ Transaction submitted to validator
 To query for transaction status, run: query txn_acc_seq 0 0 <fetch_events=true|false>
 ```
 
-You can use the command `query txn_acc_seq 0 0 true` (transaction by account and sequence number) to retrieve the information about the transaction you just submitted. The first parameter is the local index of the sender account, and the second parameter is the sequence number of the account. To see a sample output of this command refer to [Sample Outputs](#query-transaction-by-account-and-sequence-number).
+您可以使用命令 `query txn_acc_seq 0 0 true` (按帐户和序列号进行交易)来检索有关您刚提交的交易的信息。 第一个参数是发件人帐户的本地索引，第二个参数是帐户的序列号。要查看此命令的示例输出，请参阅 [输出示例](#query-transaction-by-account-and-sequence-number).
 
-You just submitted your transaction to a validator node on testnet, and it was included in the [mempool](reference/glossary.md#mempool) of the validator. This doesn't necessarily mean your transaction has been executed. In theory, if the system were slow or overloaded, it would take some time to see the results, and you may have to check multiple times by querying the accounts. To query an account with index 0, you can use the command  `query account_state 0.` The expected output is shown in the [Sample Outputs](#query-events) section
+您刚刚将您的交易提交到testnet上的验证器节点，它包含在验证器的[内存池](reference/glossary.md#mempool) 。这并不一定意味着您的交易已被执行。 理论上，如果系统运行缓慢或过载，则需要一些时间才能看到结果，您可能需要通过查询帐户多次检查。 要查询索引为0的帐户，可以使用命令  `query account_state 0.` 预期输出显示在[输出示例](#query-events)
 
-To troubleshoot the transfer command, refer to [Troubleshooting](#the-transfer-command).
+要对传输命令出错进行故障排除，请参阅 [故障排除说明](#the-transfer-command).
 
-**The Blocking Transfer Command**: You can use the `transferb` command (as shown below), instead of the `transfer` command. `transferb` will submit the transaction and return to the client prompt only after the transaction has been committed to the blockchain. An example is shown below:
+**块传输命令**: 你可以使用 `transferb` 命令 (如下所示), 而不是 `transfer` 命令。只有将交易提交到区块链上 `transferb` 命令才会提交，并给客户端进行反馈响应显示，一个例子如下所示：
 
 `libra% transferb 0 1 10`
 
-Refer to [Life of a Transaction](life-of-a-transaction.md) for an understanding of the lifecycle of a transaction from submission to execution and storage.
+参考[交易的生命周期](life-of-a-transaction.md) 了解交易从提交到执行和存储的整个过程。
 
-### Query Sequence Number After Transfer
+### 查询交易后序列号
 
 ```plaintext
 libra% query sequence 0
@@ -292,11 +290,11 @@ libra% query sequence 1
 Sequence number is: 0
 ```
 
-The sequence number of 1 for Alice’s account (index 0) indicates that one transaction has been sent from Alice’s account so far. The sequence number of 0 for Bob’s account (index 1) indicates that no transaction has been sent from Bob’s account so far. Every time a transaction is sent from an account, the sequence number is incremented by 1.
+Alice的帐号（索引0）的序号为1表示到目前为止已经从Alice的帐户发送了一个交易。 Bob的帐户（索引1）的序列号为0表示到目前为止尚未从Bob的帐户发送任何交易。 每次从帐户发送交易时，序列号都会增加1。
 
-### Check the Balance in Both Accounts After Transfer
+### 检查交易后两个账户的余额
 
-To check the final balance in both accounts, query the balance again for each account as you did in [this step](#step-3-check-the-balance). If your transaction (transfer) executed successfully, you should see 100 Libra in Alice’s account and 62 Libra in Bob’s account.
+要检查两个帐户中的最终余额，请按照 [此页面步骤](#step-3-check-the-balance)操作，再次查询余额. 如果您的交易（转账）成功执行，您应该在Alice的账户中看到100个Libra，在Bob的账户中看到62个Libra。
 
 ```plaintext
 libra% query balance 0
@@ -305,11 +303,11 @@ libra% query balance 1
 Balance is: 62
 ```
 
-### Congratulations!
+### 恭喜!
 
-You have successfully executed your transaction on the Libra testnet and transferred 10 Libra from Alice’s account to Bob’s account!
+您已成功在Libra testnet上执行了您的交易，并将10个Libra从Alice的账户转移到了Bob的账户！
 
-## Troubleshooting
+## 故障排除
 
 ### Setup
 

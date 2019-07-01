@@ -4,130 +4,141 @@ title: Libra 协议核心概念
 ---
 
 
-The Libra Blockchain is a cryptographically authenticated distributed database, and it is based on the Libra protocol. This document briefly describes the key concepts of the Libra protocol. For a detailed description of all the elements of the Libra protocol, refer to the [Libra Blockchain technical paper](https://libra.org/en-us/whitepaper).
+Libra区块链是一个基于Libra协议通过加密认证的分布式数据库。本文档简要介绍了Libra协议中的关键概念，有关Libra协议中所有元素的详细说明，请参阅[Libra区块链技术白皮书](https://libra.org/en-US/white-paper/)。
 
-The Libra Blockchain is maintained by a distributed network of [validator nodes](reference/glossary.md#validator-node), also known as validators. The validators collectively follow a [consensus protocol](reference/glossary.md#consensus-protocol) to agree on a total ordering of transactions in the blockchain. 
+Libra区块链分布式网络由[验证器节点](reference/glossary.md#validator-node)来维护。或简称称为验证器。验证人（验证节点）通过遵守[共识协议](reference/glossary.md#consensus-protocol)来达成区块链中的交易的一致。
 
-The Libra testnet is a demonstration of an early prototype of the Libra Blockchain software — Libra Core.
+Libra 测试网络（testnet）是区块链协议实现早期原型即Libra Core 的展示。
 
-## Transactions and States
 
-At the heart of the Libra protocol are two fundamental concepts &mdash; transactions and states. At any point in time, the blockchain has a “state.” The state (or ledger state) represents the current snapshot of data on the chain. Executing a transaction changes the state of the blockchain. 
+## 交易和状态
 
-![Figure 1.1 A transaction changes state.](assets/illustrations/transactions.svg)
-<small class="figure">Figure 1.1 Transactions change state.</small>
+Libra协议两个核心基本概念 &mdash; 交易和状态。 在任何时间点，区块链都有一个“状态”。状态（或称为分布式账本状态）表示链上数据的当前快照。 在执行了交易后会更改区块链的状态。
 
-Figure 1.1 represents the change of state of the Libra Blockchain that occurs when a transaction is executed. For example, at state S~N-1~, Alice has a balance of 110 Libra, and Bob has a balance of 52 Libra. When a transaction is applied to the blockchain, it generates a new state. To transition from S~N-1~ to S~N~, transaction T~N~ is applied against the state S~N-1~. This causes Alice’s balance to be reduced by 10 Libra and Bob’s balance to be increased by 10 Libra. The new state S~N~ now shows these updated balances. In figure 1.1:
 
-* **A** and **B** represent Alice’s and Bob’s accounts in the blockchain.
-* **S~N-1~** represents the (N-1)^th^ state of the blockchain.
-* **T~N~** is the n-th transaction executed on the blockchain.  
-    * In this example, T~N~ is - “send 10 Libra from person A’s account to person B’s account.”
-* **F** is a deterministic function. F always returns the same final state for a specific initial state and a specific transaction. If the current state of the blockchain is S~N-1~, and transaction T~N~ is executed on state S~N-1~, the new state of the blockchain is always S~N~.
-* **S~N~** is the n-th state of the blockchain. S~N~ is an outcome of applying F to S~N-1~ and T~N~.
+![交易状态变更](assets/illustrations/transactions.svg)
+<small class="figure">图1.1交易状态变更</small>
 
-The Libra protocol uses the [Move language](move-overview.md) to implement the deterministic execution function F.
+图1.1表示在Libra区块链上执行交易时状态的变化。例：在状态 S~N-1~ 时，Alice拥有 110 Libra 币，Bob拥有52个Libra 币。当交易（T~N~）发生后，区块链生成一个新的状态。交易 T~N~（发送10Libra Coin从Alice到Bob）发生，状态从S~N-1~变更为S~N~。可以看到Alice的Libra 币减少10，Bob的Libra 币增加10。新的状态（S~N~）显示更新后的Libra 币余额，在图1.1中：
 
-### Transactions
 
-Clients of the Libra Blockchain submit transactions to request updates to the ledger state. A signed transaction on the  blockchain contains:
+* **A** 和 **B** 区块链中的Alice和Bob的帐户。
+* **S~N-1~** 表示区块链中第 N-1 个的状态。
+* **T~N~** 区块链上执行的第 N 个交易
+    * 在图中例子是，T~N~表示是： “将10个Libra 币从Alice的账户发送到Bob的账户”
+* **F** 一个确定性函数。F函数对于确定初始状态在执行特定交易后始终会返回一个相同的的最终状态。如果区块链当前状态是S~N-1~，那么在状态S~N-1~上执行了交易T~N~，最后区块链的状态一定是S~N~。
+* **S~N~** 是区块链的第N个状态。 S~N~是在T~N~与S~N-1~上应用函数F 后的结果。
 
-* **Sender address** &mdash; Account address of the sender of the transaction.
-* **Sender public key** &mdash; The public key that corresponds to the private key used to sign the transaction.
-* **Program** &mdash; The program is comprised of the following:
-    * A Move bytecode transaction script.
-    * An optional list of inputs to the script. For a peer-to-peer transaction, the inputs contain the information about the recipient and the amount transferred to the recipient.
-    * An optional list of Move bytecode modules to publish. 
-* **Gas price** (in microlibra/gas units) &mdash; The amount the sender is willing to pay per unit of [gas](reference/glossary.md#gas) to execute the transaction. Gas is a way to pay for computation and storage. A gas unit is an abstract measurement of computation with no inherent real-world value.
-* **Maximum gas amount** &mdash; The maximum units of gas the transaction is allowed to consume.
-* **Sequence number** &mdash; An unsigned integer that must be equal to the sequence number stored under the sender’s account.
-* **Expiration time** &mdash; The time after which the transaction ceases to be valid.
-* **Signature** &mdash; The digital signature of the sender.
+Libra协议使用 [Move 语言](move-overview.md) 来实现函数F的确定性执行。
 
-The transaction script is an arbitrary program that encodes the logic of a transaction and interacts with resources published in the distributed database of the Libra Blockchain. 
+### 交易
 
-### Ledger State
+Libra 区块链的客户端通过提交交易来请求更改分布式账本的状态，在区块链上一个签名交易包含如下部分：
 
-The ledger state, or global state of the Libra Blockchain, is comprised of the state of all accounts in the blockchain. To execute transactions, each validator must know the global state of the latest version of the blockchain's distributed database. See [versioned database](#versioned-database).
+* **发送人地址** &mdash; 交易发起人的帐户地址。
+* **发送人的公钥** &mdash; 用于签署交易的私钥所对应的公钥。
+* **程序** &mdash; 程序包含以下内容:
+    * Move语言的字节码交易脚本。
+    * 可选的输入参数列表。对于点对点的交易中，输入包含接收人的信息，交易发送的金额。
+    * 可选的需发布的字节码模块
+* **Gas 价格** (以 microlibra/gas 为单位) &mdash; 发送方执行交易时需要为每单位[gas](reference/glossary.md#gas)支付的价格。 Gas是支付的是在区块链上计算和存储的费用。Gas是一个计算量的抽象，没有具体固定的真实价值。
+* **Gas 上限** &mdash; 交易允许消耗的最大 Gas 量。
+* **序号** &mdash; 无符号整型，必须等于发送者帐户中存储的序列号。
+* **过期时间** &mdash; 交易有效截止的时间。
+* **签名** &mdash; 发送人的数字签名。
 
-## Versioned Database
+交易脚本是一个任意的程序，用于对交易逻辑进行编码，并与Libra区块链中发布的数字资产（资源）进行交互。
 
-All of the data in the Libra Blockchain is persisted in a single-versioned distributed database. A version number is an unsigned 64-bit integer that corresponds to the number of transactions the system has executed.
 
-The versioned database allows validators to:
+### 分布式账本状态
 
-* Execute a transaction against the ledger state at the latest version.
-* Respond to client queries about ledger history at both current and previous versions.
+T分布式账本或者称为Libra区块链的全局状态，它是由区块链中所有账户状态组成总状态。在执行交易时，每个验证节点必须知道区块链中的分布式数据库的最新的全局状态。 参考[版本化数据库](#版本化数据库).
 
-## Account
+## 版本化数据库
 
-A Libra account is a container for Move modules and Move resources. It is identified by an [account address](reference/glossary.md#account-address). This essentially means that the state of each account is comprised of both code and data: 
+Libra区块链中的所有数据都保存在单个版本化分布式数据库中（single-versioned distributed database）。版本号是一个无符号的 64 位整数，对应于系统已执行的交易数量。
 
-* **[Move modules](move-overview.md#move-modules-allow-composable-smart-contracts)** contain code (type and procedure declarations), but they do not contain data. The procedures of a module encode the rules for updating the global state of the blockchain.
-* **[Move resources](move-overview.md#move-has-first-class-resources)** contain data but no code. Every resource value has a type that is declared in a module published in the distributed database of the blockchain.
+版本化数据库（versioned database）允许验证器:
 
-An account may contain an arbitrary number of Move resources and Move modules.
+* 在最新版本状态下执行交易。
+* 响应客户端对当前和以前版本的账本历史记录数据的查询
 
-#### Account Address
+## 账户
 
-The address of a Libra account is a 256-bit value. Users can claim addresses using digital signatures. The account address is a cryptographic hash of a user’s public verification key. To sign a transaction sent from their account address, the user (or the custodial client representing the user) must use the private key corresponding to that account.
+Libra账户包含 Move 模块(modules)和Move 资源(resources)。账户通过[账户地址](reference/glossary.md#account-address)来标识。这意味上每个账户的状态都包含代码和数据：
 
-There is no limit on the number of addresses a Libra user can claim. To claim an account address, a transaction should be sent from an account that holds sufficient Libra to pay the account creation fee.
+* **[Move 模块](move-overview.md#move-modules-allow-composable-smart-contracts)** 包含代码（类型和过程声明），但他们不包含数据。模块过程（procedures）编码了更新区块链的全局状态的规则。
 
-## Proof
+* **[Move 资源](move-overview.md#move-has-first-class-resources)** 包含数据不包含代码。每个资源值的类型都需要是在已发布的模块中声明过。
 
-All of the data in the Libra Blockchain is stored in a single versioned distributed database. The storage is used to persist agreed upon blocks of transactions and their execution results. The blockchain is represented as an ever-growing [Merkle tree of transactions](reference/glossary.md#merkle-trees). A “leaf” is appended to the tree for each transaction executed on the blockchain.
+账户可以包含任意数量的Move资源和Move模块。
 
-* A proof is a way to verify the truth of data in the Libra Blockchain. 
-* Every operation stored on the blockchain can be verified cryptographically, and the resultant proof also proves that no data has been omitted. For example, if the client queried the latest _n_ transactions from an account, the proof verifies that no transactions are omitted from the query response.
+#### 账户地址
 
-In a blockchain, the client does not need to trust the entity from which it is receiving data. A client could query for the balance of an account, ask whether a specific transaction was processed, and so on. Like other Merkle trees, the ledger history can provide an $O(\log n)$-sized proof of a specific transaction object, where _n_ is the total number of transactions processed.
+Libra账户的是地址是256位的值。用户使用签名后来声明地址所有权，账户的地址由公钥Hash加密生成。用户（自己或者代用户保管私钥的客户端）必须通过私钥签名才能发出交易。
 
-## Validator Node (Validator)
+Libra用户想要拥有的地址是没有限制的，不过要想拥有一个地址需要从一个账户支付一笔创建账号的费用。
 
-Clients of the Libra Blockchain create transactions and submit them to a validator node. A validator node runs a consensus protocol (together with other validator nodes), executes the transactions, and stores the transactions and the execution results in the blockchain. Validator nodes decide which transactions will be added to the blockchain and in which order.
-![Figure 1.1 Logical components of a validator.](assets/illustrations/validator.svg)
-<small class="figure">Figure 1.2 Logical components of a validator.</small>
+## 证明
 
- A validator node contains the following logical components:
+Libra区块链中的所有数据都存储在单个版本化分布式数据库中。存储是用于记录确定过的区块交易及执行结果。区块链链用一个不断增长的 [Merkle交易树](reference/glossary.md#merkle-trees) 来表示。对于在区块链上执行的每个交易，交易树都会追加一个"叶子"。
 
-**Admission Control (AC)**
+* 证明是验证Libra区块链中数据真实性的一种方式。
+* 区块链上存储的每个操作都可以进行加密验证,因此,结果证明也证明没有遗漏任何数据。例如,如果客户端查询帐户最新的 _n_ 个交易记录，则证明会验证查询响应中未省略任何交易记录。
 
-* Admission Control is the sole external interface of the validator node. Any request made by a client to the validator node goes to AC first. 
-* AC performs initial checks on the requests to protect the other parts of the validator node from corrupt or high volume input.
+在区块链中,客户端不需要信任接收数据的实体。客户端可以查询帐户的余额，询问是否处理了特定交易等等。与其他 Merkle 树一样, 分布式账本记录可以对一个特定的交易提供 $O(\log n)$ 时间复杂度的证明，_n_ 是处理的总交易量。
 
-**Mempool**
 
-* Mempool is a buffer that holds the transactions that are “waiting” to be executed. 
-* When a new transaction is added to a validator node’s mempool, this validator node’s mempool shares this transaction with the mempools of other validators in the system. 
+## 验证器节点 (验证器)
 
-**Consensus**
+Libra 区块链的客户创建交易并将其提交到验证器节点。验证器节点运行共识协议(与其他验证器节点一起)，执行交易，并将交易和执行结果存储在区块链中。验证器节点决定哪些交易将添加到区块链,以及按什么样顺序进行交易。
 
-* The consensus component is responsible for ordering blocks of transactions and agreeing on the results of execution by participating in the [consensus protocol](reference/glossary.md#consensus) with other validator nodes in the network.
 
-**Execution**
+![图 1.1 验证器的逻辑组件](assets/illustrations/validator.svg)
+<small class="figure">图 1.2 验证器的逻辑组件</small>
 
-* The execution component utilizes the virtual machine (VM) to execute transactions.
-* Execution’s job is to coordinate the execution of a block of transactions and maintain a transient state that can be voted upon by consensus.
-* Execution maintains an in-memory representation of the results of execution until consensus commits the block to the distributed database.
+验证器节点包含以下逻辑组件:
 
-**Virtual Machine (VM)**
+**准入控制 (AC)**
 
-* AC and Mempool use the VM component to perform validation checks on transactions.
-* VM is used to run the program included in a transaction and determine the results.
+* 准入控制是验证器节点的唯一外部接口。客户端对验证器节点发出的任何请求首先将转到准入控制组件。
+* 准入控制对请求执行初始检查,以保护验证器节点的其他部分免受损坏或大量输入的影响。
 
-**Storage**
+**内存池（Mempool）**
 
-The storage is used to persist agreed upon blocks of transactions and their execution results.
+* 内存池是一个缓存区，用于保存正"等待"执行的交易。
+* 当新交易添加到验证器节点的内存池时，此验证器节点的内存池与系统中其他验证器的内存池共享此交易。
 
-For information on interactions of each validator component with other components, refer to [Life of a Transaction](life-of-a-transaction.md).
 
-## Reference
+**共识 Consensus**
 
-* [Welcome Page](welcome-to-libra.md).
-* [My First Transaction](my-first-transaction.md) &mdash; Guides you through executing your very first transaction on the Libra Blockchain using the Libra CLI client.
-* [Getting Started with Move](move-overview.md) &mdash; Introduces you to a new blockchain programming language called Move.
-* [Life of a Transaction](life-of-a-transaction.md) &mdash; Provides a look at what happens “under the hood” when a transaction is submitted and executed.
-* [Libra Core Overview](libra-core-overview.md) &mdash; Provides the concept and implementation details of the Libra Core components through READMEs.
-* [CLI Guide](reference/libra-cli.md) &mdash; Lists the commands (and their usage) of the Libra CLI client.
-* [Libra Glossary](reference/glossary.md) &mdash; Provides a quick reference to Libra terminology.
+* 共识组件的负责对交易区块进行排序，并与网络中的其他验证器节点在[共识协议](reference/glossary.md#consensus)下商定执行结果。
+
+**执行 Execution**
+
+* 执行组件利用虚拟机 (VM) 执行交易。
+* 执行的工作是协调交易块的执行,并保持一个瞬时状态,用户共识协商投票。
+* 执行组件会维护执行结果的内存,直到共识将块提交到分布式数据库。
+
+
+**虚拟机（VM）**
+
+* 准入控制 和 内存池 使用 VM 组件对交易执行验证检查。
+* VM 用于运行交易中包含的程序并确定结果。
+
+**存储 Storage**
+
+存储用于持久化保存已经商定过的交易块及其执行结果。
+
+有关每个验证器组件与其他组件的交互的信息，参考[交易生命周期](life-of-a-transaction.md)
+
+
+## 参考
+
+* [来到 Libra 世界](welcome-to-libra.md).
+* [Libra上的第一笔交易](my-first-transaction.md) &mdash; 指导使用Libra CLI客户端在Libra区块链上执行第一笔交易。
+* [了解 Move 语言](move-overview.md) &mdash; 介绍新区块链编程语言Move。
+* [交易的生命周期](life-of-a-transaction.md) &mdash; 提供交易提交和执行时“幕后”发生的事情。
+* [Libra Core 概要](libra-core-overview.md) &mdash; Libra Core 组件的概念和实现细节。
+* [CLI 命令指南](reference/libra-cli.md) &mdash; 列出Libra CLI客户端的命令及其用法。
+* [Libra 术语表](reference/glossary.md) &mdash; 提供Libra术语的快速参考。

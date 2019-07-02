@@ -4,23 +4,23 @@ title: Bytecode Verifier
 custom_edit_url: https://github.com/libra/libra/edit/master/language/bytecode_verifier/README.md
 ---
 
-### Bytecode Verifier: Checking Safety of Stack Usage, Types, Resources, and References
+### 字节码验证程序：用于检查堆栈使用，类型，资源及引用的安全性
 
-The body of each function in a compiled module is verified separately while trusting the correctness of function signatures in the module.  Checking that each function signature matches its definition is a separate responsibility.  The body of a function is a sequence of bytecode instructions.  This instruction sequence is checked in several phases described below.
+编译后的模块中每个函数的主体分别进行单独验证，同时验证信任模块中函数签名的正确性。 检查每个函数签名是否匹配其自定义内容，单独执行验证。 函数体是一系列字节码指令。 这个指令在下面描述的几个阶段中检查。
 
-## CFG Construction
+## CFG构建
 
-A control-flow graph is constructed by decomposing the instruction sequence into a collection of basic blocks.  Each basic block contains a contiguous sequence of instructions; the set of all instructions is partitioned among the blocks.  Each block ends with a branch or return instruction.  The decomposition into blocks guarantees that branch targets land only at the beginning of some block.  The decomposition also attempts to ensure that the generated blocks are maximal.  However, the soundness of the analysis does not depend on maximality.
+通过将指令集拆解为一组基本块，构造一个控制流程图。每个基本块包含一系列连续的指令; 所有指令集都存在于块中。每个块以分支或返回指令结束。块的分解可确保分支只在某个块的开头处。 分解还试图确保生成的块是最大的。 但是，分析的可靠性不依赖于最大化。
 
-## Stack Safety
+## 堆栈安全
 
-The execution of a block happens in the context of an array of local variables and a stack.  The parameters of the function are a prefix of the array of local variables.  Passing arguments and return values across function calls is done via the stack.  When a function starts executing, its arguments are already loaded into its parameters.  Suppose the stack height is *n* when a function starts executing; then valid bytecode must enforce the invariant that when execution lands at the beginning of a basic block, the stack height is *n*.  Furthermore, at a return instruction, the stack height must be *n*+*k* where *k*, s.t. *k*>=0 is the number of return values.  The first phase of the analysis checks that this invariant is maintained by analyzing each block separately, calculating the effect of each instruction in the block on the stack height, checking that the height does not go below *n*, and that is left either at *n* or *n*+*k* (depending on the final instruction of the block and the return type of the function) at the end of the block.
+块的执行发生在局部变量数组和堆栈中。函数的参数是局部变量数组的前缀。跨函数调用传递参数和返回值都是通过堆栈完成的。当函数开始执行时，其参数已经加载到其参数中。假设函数开始执行时堆栈高度为*n*;那么有效的字节码必须强制不执行，也就是执行开始，基本块的堆栈高度为*n*。此外，在返回指令处，堆栈高度必须是*n* + *k*，其中*k*，s.t。 *k*> = 0是返回值的数量。第一阶段通过分别分析每个块来检查是否保持了这个高度不变，计算块中每个指令对堆栈高度的影响，检查高度是否低于*n*，并且保留在*n*或*n* + *k*（取决于块的最终指令和函数的返回类型）
 
-## Type Safety
+## 类型安全
 
-The second phase of the analysis checks that each operation, primitive or defined function, is invoked with arguments of appropriate types.  The operands of an operation are values located either in a local variable or on the stack.  The types of local variables of a function are already provided in the bytecode.  However, the types of stack values are inferred.  This inference and the type checking of each operation can be done separately for each block.  Since the stack height at the beginning of each block is *n* and does not go below *n* during the execution of the block, we only need to model the suffix of the stack starting at *n* for type checking the block instructions.  We model this suffix using a stack of types on which types are pushed and popped as the instruction stream in a block is processed.  The type stack and the statically-known types of local variables are enough to type check each instruction.
+分析第二阶段检查是否使用原始函数或已定义函数的参数来调用每个操作。 操作的操作数是位于局部变量或堆栈中的值。 字节码中已经提供了函数的局部变量类型。 但是，需要堆栈值的类型。 可以针对每个块单独地进行该推断和每个操作的类型检查。 由于每个块开始时的堆栈高度为*n*并且在执行块期间不会低于*n*，因此我们只需要对从*n*开始的堆栈的后缀进行检查，以便对块指令进行类型检查。 我们使用一堆类型对此后缀进行检查，在处理块中的指令流时，在这些类型上推送和返回类型。 堆栈类型和静态已知类型的局部变量键入来检查每条指令。
 
-## Resource Safety
+## 资源安全
 
 Resources represent assets of the blockchain. As such, there are certain restrictions over these types that do not apply to normal values. Intuitively, resource values cannot be copied and must be used by the end of the transaction (this means moved to global storage or destroyed). Concretely, the following restrictions apply:
 

@@ -4,25 +4,25 @@ title: Admission Control
 custom_edit_url: https://github.com/libra/libra/edit/master/admission_control/README.md
 ---
 
-Admission Control (AC) is the public API endpoint for Libra and it takes public gRPC requests from clients.
+准入控制（AC）是Libra的公共API接口，它用于接收来自客户端的公共gRPC请求。
 
-## Overview
-Admission Control (AC) serves two types of requests from clients:
-1. SubmitTransaction - To submit a transaction to the associated validator.
-2. UpdateToLatestLedger - To query storage, e.g., account state, transaction log, proofs, etc.
+## 概述
+准入控制（AC）处理于来自客户的两种类型的请求:
+1. 提交交易  - 向关联的验证器提交交易。
+2. 更新最新分布式账本 - 查询存储，例如帐户状态，交易日志，验证等。
 
-## Implementation Details
-Admission Control (AC) implements two public APIs:
-1. SubmitTransaction(SubmitTransactionRequest)
-    * Multiple validations will be performed against the request:
-       * The Transaction signature is checked first. If this check fails, AdmissionControlStatus::Rejected is returned to client.
-       * The Transaction is then validated by vm_validator. If this fails, the corresponding VMStatus is returned to the client.
-    * Once the transaction passes all validations, AC queries the sender's account balance and the latest sequence number from storage and sends them to Mempool along with the client request.
-    * If Mempool returns MempoolAddTransactionStatus::Valid, AdmissionControlStatus::Accepted is returned to the client indicating successful submission. Otherwise, corresponding AdmissionControlStatus is returned to the client.
-2. UpdateToLatestLedger(UpdateToLatestLedgerRequest). No extra processing is performed in AC.
-* The request is directly passed to storage for query.
+## 实施细节
+准入控制（AC）实现两个公共API：
+1. 提交交易（提交交易请求）
+    * 将对请求执行多次验证：
+       * 首先检查交易签名。 如果此检查失败，AdmissionControlStatus :: Rejected将返回给客户端。
+       * 然后由vm_validator验证交易。 如果失败，则将相应的VMStatus返回给客户端。
+    * 一旦交易通过所有验证，AC将从存储中查询发送人的帐户余额和最新序列号，并将其与客户端请求一起发送到内存池。
+    * 如果内存池返回 MempoolAddTransactionStatus :: Valid，则会将AdmissionControlStatus :: Accepted 返回给客户端，表示提交成功。 否则，将相应的AdmissionControlStatus返回给客户端。
+2. 更新最新分布式账本(更新最新分布式账本请求). 在AC中不执行额外的处理。
+* 请求将直接传递到存储进行查询。
 
-## Folder Structure
+## 文件夹结构
 ```
     .
     ├── README.md
@@ -37,6 +37,6 @@ Admission Control (AC) implements two public APIs:
             └── unit_tests                      # Tests
 ```
 
-## This module interacts with:
-The Mempool component, to submit transactions from clients.
-The Storage component, to query validator storage.
+## 该模块与以下内容交互：
+内存池组件，用于接收从客户端提交交易。
+存储组件，用于查询验证器存储。

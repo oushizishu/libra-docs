@@ -77,30 +77,30 @@ custom_edit_url: https://github.com/libra/libra/edit/master/language/bytecode_ve
 * 非参考值被建模为 *Value*(*ns*)，其中*ns*是表示借用引用的一组nonce。 仅当*ns*为空时，才会认为此值的销毁/移动/复制是安全的。 堆栈上的值通常满足此属性，但局部变量中的值可能不满足。
 * 引用被建模为*Reference*(*n*)，其中 *n* 是随机数。 如果引用被标记为共享，则始终允许读访问，并且永远不允许写访问。 如果引用 *Reference*(*n*)  被标记为独占，则仅当 *n* 没有借用时才允许写访问，如果从 *n* 借用的所有随机数驻留在被标记的引用中，则允许读访问和共享。 此外，构造引用的规则保证了引用标记共享的扩展也必须被标记为共享。 这些检查共同提供了前面提到的参考透明性。
 
-At the moment, the bytecode language does not contain any direct constructors for shared references. `BorrowLoc` and `BorrowGlobal` create exclusive references.  `BorrowField` creates a reference that inherits its tag from the source reference.  Move (when applied to a local containing a reference) moves the reference from a local variable to the stack.  `FreezeRef` is used to convert an existing exclusive reference to a shared reference. In the future, we may add a version of `BorrowGlobal` that generates a shared reference
+目前，字节码语言不包含任何用于共享引用的直接构造函数。 `BorrowLoc` 和 `BorrowGlobal` 创建独占引用。 `BorrowField` 创建一个从源引用继承其标记的引用。 移动（当应用包含引用本地时）将引用从局部变量移动到堆栈。 `FreezeRef` 用于将现有的独占引用转换为共享引用。 将来，我们可能会添加一个生成共享引用的 `BorrowGlobal` 版本
 
-**Errors.** As mentioned before, an error is reported by the checker in one of the following situations:
+**报错.** 如前所述，检查人在以下某种情况下报告错误：
 
-* An instruction cannot be proved safe during propagating of abstract state through a block.
-* Join of abstract states propagated via different incoming edges into a block fails.
+* 在通过块传播抽象状态期间，不能证明指令是安全的。
+* 通过不同传入边，传播进来的的抽象状态联接到块中失败。
 
-Let us take a closer look at the second reason for error reporting above.  Note that the stack of type and abstract value pairs representing the usable stack suffix is empty at the beginning of a block.  So, the join occurs only over the abstract state representing the available local variables and the borrow information.  The join fails only in the situation when the set of available local variables is different on the two edges.  If the set of available variables is identical, the join itself is straightforward---the borrow sets are unioned point-wise.   There are two subtleties worth mentioning though:
+让我们仔细看看上面的错误报告的第二个原因。 请注意，表示可用堆栈后缀的类型和抽象值，在对的堆栈在块的开头是空的。 因此，连接仅在表示可用局部变量和借用信息的抽象状态上发生。 仅当两个边上的可用局部变量集不同时，连接才会失败。 如果可用变量集是相同的，则连接本身很简单 - 借用集是逐步联合的。 但有两个细微之处值得一提：
 
-* The set of nonces used in the abstract states along the two edges may not have any connection with each other.  Since the actual nonce values are immaterial, the nonces are canonically mapped to fixed integers (indices of local variables containing the nonces) before performing the join.
-* During the join, if a nonce *n* is in the domain of borrowed_by on one side and in the domain of fields_borrowed_by on the other side, *n* is moved from fields_borrowed_by to borrowed_by before doing the join.
+* 沿着两条边的抽象状态中使用的一组随机数可能彼此没有任何连接。 由于实际的随机数值并不重要，因此在执行连接之前，将随机数映射到固定整数（包含随机数的局部变量的索引）。
+* 在连接期间，如果nonce *n* 位于另一侧的 borrowed_by 域和 fields_borrowed_by 域中，则 *n* 在执行连接之前从 fields_borrowed_by 移动到 borrowed_by。
 
-**Borrowing References.** Each of the reference constructors ---`BorrowLoc`, `BorrowField`, `BorrowGlobal`, `FreezeRef`, and `CopyLoc`--- is modeled via the generation of a fresh nonce.  While `BorrowLoc` borrows from a value in a local variable, `BorrowGlobal` borrows from the global pool of values.  `BorrowField`, `FreezeRef`, and `CopyLoc` (when applied to a local containing a reference) borrow from the source reference.  Since each fresh nonce is distinct from all previously-generated nonces, the analysis maintains the invariant that all available local variables and stack locations of reference type have distinct nonces representing their abstract value.  Another important invariant is that every nonce referred to in the borrow information must reside in some abstract value representing a local variable or a stack location.
+**借用参考文献.** 每个引用构造函数--- `BorrowLoc`, `BorrowField`, `BorrowGlobal`, `FreezeRef`, 和 `CopyLoc` ---都是通过生成新的nonce来建模的。 当 `BorrowLoc` 借用局部变量中的值时，`BorrowGlobal` 借用了全局值。 `BorrowField`，`FreezeRef` 和 `CopyLoc` （应用于包含引用的本地值）从源引用借用。 由于每个新的nonce与所有先前生成的nonce不同，因此分析保持不变量，即所有可用的局部变量和引用类型的堆栈位置具有表示其抽象值的不同nonce。 另一个重要的不变量是借用信息中引用的每个随机数必须驻留在表示局部变量或堆栈位置的某个抽象值中。
 
-**Releasing References.** References, both global and local, are released by the `ReleaseRef` operation.  References must be explicitly released.  It is an error to return from a function with unreleased references in a local variable of the function.  All references must be explicitly released.  Therefore, it is an error to overwrite an available reference using the `StLoc` operation.
+**引用释放.** 全局和本地引用由 `ReleaseRef` 操作发布。 必须显式地释放引用。 从函数的局部变量中返回具有未释放引用的函数值是错误的。 必须显示释放所有引用。 因此，使用 `StLoc` 操作覆盖可用引用是错误的。
 
-References are implicitly released when consumed by the operations `ReadRef`, `WriteRef`, `Eq`, `Neq`, and `EmitEvent`.
+当操作`ReadRef`, `WriteRef`, `Eq`, `Neq`, 和 `EmitEvent` 时，将隐式释放引用。
 
-**Global References.** The safety of global references depends on a combination of static and dynamic analysis.  The static analysis does not distinguish between global and local references.  But the dynamic analysis distinguishes between them and performs reference counting on the global references as follows: the bytecode interpreter maintains a map `M` from a pair of Address and fully-qualified resource type to a union (Rust enum) comprising the following values:
+**全局引用.** 全局引用的安全性取决于静态和动态分析的组合。 静态分析不区分全局和本地引用。 但动态分析区分它们并对全局引用执行引用计数，如下所示：字节码解释器将一对映射 `M` 从一对地址和完全限定的资源类型维护到一个 union（Rust枚举），包含以下值：
 
 * `Empty`
-* `RefCount(n)` for some `n` >= 0
+* `RefCount(n)` 某值n（计数） `n` >= 0
 
-Extra state updates and checks are performed by the interpreter for the following operations.  In the code below, assert failure indicates programmer error, and panic failure indicates internal error in interpreter.
+解释器对以下操作执行额外的状态更新和检查。在下面的代码中，assert失败指示程序员错误，panic失败指示解释器中的内部错误。
 
 ```text
 MoveFrom<T>(addr) {
@@ -145,9 +145,9 @@ ReleaseRef(ref) {
 }
 ```
 
-A subtle point not explicated by the rules above is that `BorrowField` and `FreezeRef`, when applied to a global reference, leave the reference count unchanged.  The reason is because these instructions consume the reference at the top of the stack while producing an extension of it at the top of the stack.  Similarly, since `ReadRef`, `WriteRef`, `Eq`, `Neq`, and `EmitEvent` consume the reference at the top of the stack, they will reduce the reference count by 1.
+上面规则没有说明的一个微妙之处是，当应用于全局引用时，`BorrowField` 和 `FreezeRef` 保持引用计数不变。 原因是因为这些指令消耗了堆栈顶部的引用，同时在堆栈顶部生成了它的扩展。 类似地，由于 `ReadRef` ，`WriteRef`，`Eq`，`Neq` 和 `EmitEvent` 消耗堆栈顶部的引用，它们将引用计数减少1。
 
-## How is this module organized?
+## 这个模块组织是这样的?
 
 ```text
 *

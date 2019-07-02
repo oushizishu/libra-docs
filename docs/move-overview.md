@@ -164,6 +164,7 @@ Bob将在未来的某个时间点在地址*a*创建一个帐户。 Alice希望�
 * 允许Alice创建这样的类型并在她的帐户下发布它（`create`过程）。
 * 允许Bob声明资源（`claim_for_recipient`过程）。
 * 允许任何拥有 `EarmarkedLibraCoin.T` 的人销毁它并获得之前“指定”（质押）资金（`unwrap`程序）。
+
 ```move
 // A module for earmarking a coin for a specific recipient
 module EarmarkedLibraCoin {
@@ -245,12 +246,12 @@ module EarmarkedLibraCoin {
 }
 ```
 
-Alice can create an earmarked coin for Bob by creating a transaction script that invokes `create` on Bob's address *a* and a `LibraCoin.T` that she owns. Once *a* has been created, Bob can claim the coin by sending a transaction from *a*. This invokes `claim_for_recipient`, passes the result to `unwrap`, and stores the returned `LibraCoin` wherever he wishes. If Bob takes too long to create an account under *a* and Alice wants to reclaim her funds, she can do so by using `claim_for_creator` followed by `unwrap`.
+Alice可以通过创建一个交易脚本为Bob创建一个专用币，该脚本包括Bob的地址*a*和同时在她拥有的  `LibraCoin.T`  上调用`create`。 一旦*a*创建，Bob就可以通过从*a*发送交易来获得币。 这将调用`claim_for_recipient`，将结果传递给`unwrap`，并将返回的`LibraCoin` 的结果存储。 如果Bob花费太长时间在*a*下创建一个帐户，这时候Alice想要收回她的资金，她可以通过使用`claim_for_creator`然后使用`unwrap`来实现。
 
-The observant reader may have noticed that the code in this module is agnostic to the internal structure of `LibraCoin.T`. It could just as easily be written using generic programming (e.g., `resource T<AnyResource: R> { coin: AnyResource, ... }`). We are currently working on adding support for exactly this sort of parametric polymorphism to Move.
+细心的读者可能已经注意到，该模块中的代码与`LibraCoin.T`的内部结构无关。 它可以很容易地使用程序泛型来编写（例如，`resource T <AnyResource：R> {coin：AnyResource，...}`）。 我们目前正致力于为Move添加对这种参数多态的支持。
 
-### Future Developer Experience
+### 开发经验更新
 
-In the near future, the IR will stabilize, and compiling and verifying programs will become more user-friendly. Additionally, location information from the IR source will be tracked and passed to the verifier to make error messages easier to debug. However, the IR will continue to remain a tool for testing Move bytecode. It is meant to be a semantically transparent representation of the underlying bytecode. To allow effective tests, the IR compiler must produce bad code that will be rejected by the bytecode verifier or fail at runtime in the compiler. A user-friendly source language would make different choices; it should refuse to compile code that will fail at a subsequent step in the pipeline.
+在不久的将来，IR将稳定下来，编译和验证程序的用户体检将更好。 此外，将跟踪来自IR源的位置信息并将其传递给验证程序，使得错误消息更易于调试。 但是，IR将继续作为测试Move字节码的工具。 它意味着是底层字节码的语义更加透明。 为了进行有效的测试，IR编译器会生成一些错误的代码，这些代码将被字节码验证程序拒绝或在运行时在编译器中失败。 友好的用户源语言会做出不同的选择; 它应该拒绝编译将在后续步骤中失败的代码。
 
-In the future, we will have a higher-level Move source language. This source language will be designed to express common Move idioms and programming patterns safely and easily. Since Move bytecode is a new language and the Libra Blockchain is a new programming environment, our understanding of the idioms and patterns we should support is still evolving. The source language is in the early stages of development, and we do not have a timetable for its release yet.
+将来，我们将拥有更高级别的Move源语言。 该源语言旨在安全轻松地表达常见的Move惯用语法和编程模式。 由于Move是一种新语言，而Libra 区块链是一种新的编程环境，我们对应该支持的惯用语法和模式的理解仍在不断发展。 Move源语言还处于开发的早期阶段，我们还没有发布它的时间表。

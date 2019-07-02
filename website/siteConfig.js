@@ -37,7 +37,7 @@ const siteConfig = {
     {doc: 'welcome-to-libra', label: '文档'},
     
     {blog: true, label: "Blog" },
-    {href: 'https://libra.org', label: 'libra官网'},
+    {href: 'https://libra.org', label: 'Libra官网'},
     {href: 'https://github.com/libra/libra', label: 'GitHub'}
     // {search: false}, // position search box to the very right
   ],

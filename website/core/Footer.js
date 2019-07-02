@@ -5,7 +5,6 @@
 
 const PropTypes = require('prop-types');
 const React = require('react');
-const CookieBanner = require(`${process.cwd()}/core/CookieBanner`);
 
 function SocialFooter(props) {
   const projectName = 'libra';
@@ -93,7 +92,6 @@ class Footer extends React.Component {
           )}{' '}
          Libra 中文文档 | 深入浅出区块链
         </section>
-        <CookieBanner />
       </footer>
     );
   }

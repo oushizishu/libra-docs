@@ -12,7 +12,7 @@ const FormThanks = (props) => {
   return (
     <FormContainer
       {...props}
-      title="Thank you!"
+      title="感谢!"
       subtitle=""
     >
       <a className="button" href={props.config.baseUrl}>Return</a>

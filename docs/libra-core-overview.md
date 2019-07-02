@@ -3,13 +3,13 @@ id: libra-core-overview
 title: Libra Core 概要
 ---
 
-Libra Core是Libra协会发布的基于Libra协议的开源实现的官方项目名称。
+Libra Core 是Libra协会发布的基于Libra协议的开源实现的官方项目名称。
 
 * 该软件是Libra协议和Move语言的第一个实现。
 * Libra Core包括验证器和客户端功能。
 * Libra Core是用Rust编写的。
 
-## Libra Core组件自述文件
+## Libra Core组件文档
 
 * [准入控制](crates/admission-control.md)
 * [字节码验证器](crates/bytecode-verifier.md)

@@ -3,37 +3,39 @@ id: move-overview
 title: 了解 Move 语言
 ---
 
-Move是一种新的编程语言，在为Libra 区块链提供安全、可编程的基础。 Libra区块链中的帐户作为容器，包含了任意数量的Move资源和Move模块。 提交给Libra 区块链的每个交易都使用Move中编写的交易脚本来实现其逻辑。 交易脚本可以通过调用模块声明的过程来更新区块链的全局状态。
+Move是一种新的编程语言，为 Libra 区块链提供安全、可编程的基础。 Libra区块链中的帐户作为容器，包含了任意数量的Move资源和Move模块。 提交给 Libra 区块链的每个交易都使用 Move 编写的交易脚本来实现其逻辑。 交易脚本可以通过调用模块声明的过程（procedures）来更新区块链的全局状态。
 
-在本指南的第一部分中，我们将介绍Move语言的主要功能进行深入介绍：
+> 译者注：Move 的过程（procedure）可以理解为其他语言的的函数。
 
-1. [可编程的Move交易脚本](#move-transaction-scripts-enable-programmable-transactions)
-2. [支持智能合约的Move模块](#move-modules-allow-composable-smart-contracts)
-3. [Move的一等资源](#move-has-first-class-resources)
+在本指南的第一部分中，我们从上层的角度介绍 Move语言的主要功能：
 
-有兴趣的读者，[Move技术手册](move-paper.md) 包含了有关该语言的各种细节。
+1. [可编程的Move交易脚本](#可编程的move交易脚本)
+2. [可组合智能合约的Move模块](#可组合智能合约的move模块)
+3. [Move的一等资源](#move的一等资源)
 
-在本指南的第二部分中，我们将“深入”并向您展示如何在[Move表现层](#move-intermediate-representation)中编写自己的Move程序. 初始testnet版本不支持自定义Move程序，但这些功能可供您在本地试用。
+有兴趣的读者，可以进一步于都[Move技术手册](move-paper.md) 了解有关该语言的各种细节。
+
+在本指南的第二部分中，我们将“深入”并向您展示如何在[Move中间表示层](#move中间表示层-ir)中编写自己的Move程序. 初始版本的testnet测试网络不支持自定义Move程序，但这些功能可以在本地使用。
 
 ## Move的主要特性
 
 ### 可编程的Move交易脚本
 
-* 每一个Libra区块链上交易都包含 **Move交易脚本** 客户端针对验证器进行交易逻辑的编码（例如，将Libra从Alice的帐户移动到Bob的帐户）。 
-* 交易脚本通过调用一个或者多个[Move模块](#move-modules-allow-composable-smart-contracts) 和Libra区块链全局存储中发布的 [Move资源](#move-has-first-class-resources) 进行交互。
+* 每一个Libra区块链上交易都包含 **Move交易脚本** 用来对交易逻辑的编码，同时验证器据此验证客户端的行为（例如，将Libra币从Alice的帐户移动到Bob的帐户）。 
+* 交易脚本通过调用一个或者多个[Move模块](#可组合智能合约的move模块)的过程和Libra区块链全局存储中发布的 [Move资源](#move的一等资源) 进行交互。
 * 交易脚本不存储在区块链的全局状态中，其他的交易脚本也无法调用它，这是一次性程序。
-* 我们在 [编写交易脚本](#writing-transaction-scripts) 中提供了几个交易脚本示例。
+* 我们在[编写交易脚本](#编写交易脚本) 中提供了几个交易脚本示例。
 
-### 支持智能合约的Move模块
+### 可组合智能合约的Move模块
 
-Move模块定义了更新Libra 区块链全局状态的规则。 这些模块与其他区块链系统中与智能合约相同。 模块声明可以在用户帐户下发布的 [资源](#move-has-first-class-resources) 类型。Libra 区块链中的每个帐户都是一个容器，可以容纳任意数量的资源和模块。
+Move模块（Modules）定义了更新 Libra 区块链全局状态的规则。 这些模块与其他区块链系统中与智能合约相同。 模块声明可以在用户帐户下发布的 [资源](#move的一等资源) 类型。Libra 区块链中的每个帐户都是一个容器，可以容纳任意数量的资源和模块。
 
 * 模块声明两种结构类型（包括资源，这是一种特殊的结构）和过程。
 * Move模块的过程定义了创建，访问和销毁它声明的类型的规则。
 * 模块可重复使用。 在一个模块中声明的结构类型可以使用在另一个模块中，并且在一个模块中声明的过程可以在另一个模块中声明的公共过程中调用。 模块可以调用其他Move模块中声明的过程。 交易脚本可以调用已发布模块的任何公共过程。
 * 最终，Libra用户将能够在自己的帐户下发布模块。
 
-### Move的一流资源
+### Move的一等资源
 
 * Move的关键功能是能自定义资源类型。 资源类型通过编码具有丰富可编程性和安全性。
 * 资源是语言中的普通类型值。 它们可以存储为数据结构，作为参数传递给过程，从过程返回，等等。
@@ -42,19 +44,19 @@ Move模块定义了更新Libra 区块链全局状态的规则。 这些模块与
 
 ## Move: 底层
 
-### Move表现层
+### Move中间表示层(IR)
 
-本节介绍如何在Move表示层（IR）中编写 [交易脚本](#writing-transaction-scripts) [模块](#writing-modules) 我们提醒读者，IR是即将推出的Move语言的早期（且不稳定） (详见 [开发经验更新](#future-developer-experience) 更新相关详细信息). Move IR是一个覆盖于Move字节码之上的轻量语法层，用于测试字节码验证器和虚拟机，它对开发人员不是特别友好。开发人员可基于它编写高级别的可读代码，但又足够底层可以直接编译Move字节码。尽管如此，我们还是对Move语言感到兴奋，并希望开发人员能够尝试一下IR，尽管它还存在一些不足之处。
+本节介绍如何在Move中间表示层（IR：intermediate representation）中编写 [交易脚本](#编写交易脚本)和[模块](#编写模块) 我们提醒读者，IR是即将推出的Move语言的早期（且不稳定） (详见 [未来开发体验](#未来的开发者体验) 更新相关详细信息). Move IR是一个覆盖于Move字节码之上的轻量语法层，用于测试字节码验证器和虚拟机，它对开发人员不是特别友好。开发人员可基于它编写高级别的可读代码，但又足够底层可以直接编译Move字节码。尽管如此，我们还是对Move语言感到兴奋，并希望开发人员能够尝试一下IR，尽管它还存在一些不足之处。
 
 我们将继续介绍重要评论的Move IR的细节。 我们鼓励读者通过在本地编译，运行和修改示例来跟随这些示例。 `libra/language/README.md` 和 `libra/language/ir_to_bytecode/README.md` 下的README文件解释了如何执行此操作。
 
 ### 编写交易脚本
 
-正如我们在 [启用可编程Move交易脚本](#move-transaction-scripts-enable-programmable-transactions) 中所描述的, 用户编写交易脚本以请求更新Libra 区块链的全局存储。 几乎任何交易脚本中都会出现两个重要的构建块 `LibraAccount.T` 和 `LibraCoin.T` 。 `LibraAccount` 是模块的名称, `T` 是该模块声明的资源的名称。这是Move中常见的命名规则; 模块声明的“main”类型通常命名为 `T`. 
+正如我们在 [启用可编程Move交易脚本](#可编程的move交易脚本) 中所描述的, 用户编写交易脚本以请求更新Libra 区块链的全局存储。 几乎任何交易脚本中都会出现两个重要的构建块 `LibraAccount.T` 和 `LibraCoin.T` 。 `LibraAccount` 是模块的名称, `T` 是该模块声明的资源的名称。这是Move中常见的命名规则; 模块声明的“main”类型通常命名为 `T`. 
 
 当我们说用户 "在Libra区块链上有一个地址为 `0xff` 开头的帐号" 时, 我们的意思是地址 `0xff` 拥有 `LibraAccount.T` 资源的实例。 每个非空地址都有一个 `LibraAccount.T` 资源。 此资源存储帐户数据，例如序列号，身份验证密钥和余额。 在Libra区块链上想要与帐户有任何交互都必须通过从 `LibraAccount.T` 资源读取数据或调用 `LibraAccount` 模块来实现.
 
-账户余额是 `LibraCoin.T` 类型的资源. 正如我们在 [Move的一等资源](#move-has-first-class-resources) 中所解释的那样，这是Libra
+账户余额是 `LibraCoin.T` 类型的资源. 正如我们在 [Move的一等资源](#move的一等资源) 中所解释的那样，这是Libra
  Coin类型。 与任何其他Move资源一样，此类型是语言中的“一等公民”。 `LibraCoin.T` 类型的资源可以存储在程序变量中，在程序之间传递，等等。
 
 我们鼓励感兴趣的读者在 `libra/language/stdlib/modules/` 目录下的 `LibraAccount` 和 `LibraCoin` 模块中检查这两个关键资源的Move IR定义。
@@ -250,7 +252,7 @@ Alice可以通过创建一个交易脚本为Bob创建一个专用币，该脚本
 
 细心的读者可能已经注意到，该模块中的代码与`LibraCoin.T`的内部结构无关。 它可以很容易地使用程序泛型来编写（例如，`resource T <AnyResource：R> {coin：AnyResource，...}`）。 我们目前正致力于为Move添加对这种参数多态的支持。
 
-### 开发经验更新
+### 未来的开发者体验
 
 在不久的将来，IR将稳定下来，编译和验证程序的用户体检将更好。 此外，将跟踪来自IR源的位置信息并将其传递给验证程序，使得错误消息更易于调试。 但是，IR将继续作为测试Move字节码的工具。 它意味着是底层字节码的语义更加透明。 为了进行有效的测试，IR编译器会生成一些错误的代码，这些代码将被字节码验证程序拒绝或在运行时在编译器中失败。 友好的用户源语言会做出不同的选择; 它应该拒绝编译将在后续步骤中失败的代码。
 

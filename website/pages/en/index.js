@@ -129,23 +129,23 @@ class Index extends React.Component {
         className="productShowcaseSection"
         id="quickstart"
         style={{textAlign: 'center', marginBottom:'30px'}}>
-        <h2>Try Libra</h2>
-        <p>Currently available for macOS and Linux.</p>
+        <h2>尝试 Libra</h2>
+        <p>当前仅支持 macOS 和 Linux系统。</p>
         <Container>
-          <h4>1. Clone Libra:</h4>
+          <h4>1. 克隆 Libra:</h4>
           <div style={{marginLeft:"30px"}}>
             <MarkdownBlock>{
 bash`git clone https://github.com/libra/libra.git && cd libra`}</MarkdownBlock>
           </div>
-          <h4>2. Install Dependencies:</h4>
+          <h4>2. 安装依赖：</h4>
           <div style={{marginLeft:"30px"}}>
             <MarkdownBlock>{bash`./scripts/dev_setup.sh`}</MarkdownBlock>
           </div>
-            <h4>3. Run the CLI:</h4>
+            <h4>3. 运行 CLI:</h4>
           <div style={{marginLeft:"30px"}}>
             <MarkdownBlock>{bash`./scripts/cli/start_cli_testnet.sh`}</MarkdownBlock>
           </div>
-            <h4>4. Run Your First Transaction:</h4>
+            <h4>4. 发起第一笔交易:</h4>
           <div style={{marginLeft:"30px"}}>
                 <Button href={'docs/my-first-transaction'}>My First Transaction</Button>
           </div>

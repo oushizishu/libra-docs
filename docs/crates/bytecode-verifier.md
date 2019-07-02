@@ -22,60 +22,60 @@ custom_edit_url: https://github.com/libra/libra/edit/master/language/bytecode_ve
 
 ## 资源安全
 
-Resources represent assets of the blockchain. As such, there are certain restrictions over these types that do not apply to normal values. Intuitively, resource values cannot be copied and must be used by the end of the transaction (this means moved to global storage or destroyed). Concretely, the following restrictions apply:
+资源代表区块链上的资产。 因此，对这些类型存在某些限制，这些限制不适用于正常值。 直观地说，资源值无法复制，必须在交易结束时使用（这意味着到达全局存储或销毁）。 具体而言，有以下限制：
 
-* `CopyLoc` and `StLoc` require the type of local is not of resource kind.
-* `WriteRef`, `Eq`, and `Neq` require the type of the reference is not of resource kind.
-* At the end of a function (when `Ret` is reached), no any local whose type is of resource kind must be empty, i.e., the value must have been moved out of the local.
+* `CopyLoc` 和 `StLoc` 要求本地类型不是资源类型。
+* `WriteRef`, `Eq`, 和 `Neq` 要求引用的类型不属于资源类型。
+* 在函数结束时 (达到 `Ret`), 任何类型为资源类型的局部变量都不能为空，即该值必须已从本地移出。
 
-As mentioned above, this last rule around `Ret` implies that the resource *must* have been either:
+如上所述，围绕 `Ret` 的最后一条规则意味着资源**必须**是：
 
-* Moved to global storage via `MoveToSender`.
-* Destroyed via `Unpack`.
+* 通过 `MoveToSender` 移动到全局存储。
+* 通过 `Unpack` 销毁。
 
-Both of `MoveToSender` and `Unpack` are internal to the module in which the resource is declared.
+`MoveToSender` 和 `Unpack` 都位于资源模块内部。
 
-## Reference Safety
+## 安全参考
 
-References are first-class in the bytecode language.  Fresh references become available to a function in several ways:
+引用在字节码语言中是一等的。函数可以通过以下几种方式获得新的引用:
 
-* Input parameters.
-* Taking address of the value in a local variable.
-* Taking address of the globally published value in an address.
-* Taking address of a field from a reference to the containing struct.
-* Return value from a function.
+* 输入参数。
+* 获取局部变量中地址值。
+* 获取全局发布地址值。
+* 从对包含结构的引用中获取地址的字段。
+* 函数返回值。
 
-The goal of reference safety checking is to ensure that there are no dangling references.  Here are some examples of dangling references:
+引用安全性检查的目的是确保没有空引用。下面是空引用的一些例子:
 
-* Local variable `y` contains a reference to the value in a local variable `x`; `x` is then moved.
-* Local variable `y` contains a reference to the value in a local variable `x`; `x` is then bound to a new value.
-* Reference is taken to a local variable that has not been initialized.
-* Reference to a value in a local variable is returned from a function.
-* Reference `r` is taken to a globally published value `v`; `v` is then unpublished.
+* 局部变量 `y` 包含对局部变量 `x` 中的值的引用; 然后移动 `x` 。
+* 局部变量 `y` 包含对局部变量 `x` 中的值的引用; 然后将 `x` 绑定到一个新值。
+* 引用尚未初始化的局部变量。
+* 从函数返回中对局部变量中的值引用。
+* 引用 `r` 指向全局发布的值 `v`;  `v` 则未发布。
 
-References can be either exclusive or shared; the latter allow only read access.  A secondary goal of reference safety checking is to ensure that in the execution context of the bytecode program  — including the entire evaluation stack and all function frames — if there are two distinct storage locations containing references `r1` and `r2` such that `r2` extends `r1`, then both of the following conditions hold:
+引用可以是独占的，也可以是共享的; 后者只允许读访问。 参考安全检查的第二个目标就是确保在字节码程序执行中 - 包括整个堆栈和所有功能框架 - 如果有两个不同的存储位置包含了引用`r1`和`r2`，那么`r2 `扩展`r1`，然后满足以下两个条件：
 
-* If `r1` is tagged exclusive, then it must be inactive, i.e. it is impossible to reach a control location where `r1` is dereferenced or mutated.
-* If `r1` is shared, then `r2` is shared.
+* 如果 `r1` 被标记为独占，则它必须是不活动的，即 `r1` 不能被解除引用或变更位置。
+* 如果 `r1` 是共享的, 那么 `r2` 也是共享的。
 
-The two conditions above establish the property of referential transparency, important for scalable program verification, which looks roughly as follows: consider the piece of code `v1 = *r; S; v2 = *r`, where `S` is an arbitrary computation that does not perform any write through the syntactic reference `r` (and no writes to any `r'` that extends `r`).  Then `v1 == v2`.
+上述两个条件确立了引用透明的特性，这对于可扩展程序验证很重要，其大致如下：考虑一段代码`v1 = * r; S; v2 = * r`，其中`S`是一个任意计算，它不通过语法引用 `r` 执行任何写操作（并且没有写任何扩展 `r` 的 `r'` ）。 然后 `v1 == v2` 。
 
-**Analysis Setup.** The reference safety analysis is set up as a flow analysis (or abstract interpretation for those that are familiar with the concept).  An abstract state is defined for abstractly executing the code of a basic block.  A map is maintained from basic blocks to abstract states.  Given an abstract state *S* at the beginning of a basic block *B*, the abstract execution of *B* results in state *S'*.  This state *S'* is propagated to all successors of *B* and recorded in the map.  If a state already existed for a block, the freshly propagated state is “joined” with the existing state.  The join might fail in which case an error is reported.  If the join succeeds but the abstract state remains unchanged, no further propagation is done.  Otherwise, the state is updated and propagated again through the block.  An error may also be reported when an instruction is processed during propagation of abstract state through a block.  This propagation terminates because ...
+**设置分析.** 参考安全性分析设置为流分析（或者对那些熟悉概念的人进行抽象解释）。 抽象状态是为抽象地执行基本块的代码而定义的。 从基本块到抽象状态映射维护。 给定基本块 *B* 开头的抽象状态为 *S*，*B* 的抽象执行导致状态 *S’*。 该状态 *S'* 传播到 *B* 的所有后续并记录在映射中。 如果某个状态已经存在，则新广播的状态将与现有状态“连接”。 连接可能会失败，在这种情况下会报告错误。 如果连接成功但抽象状态保持不变，则不再进行广播。 否则，状态将更新并再次通过块传播。 在抽象状态通过块传播期间处理指令时，也可能报告错误。 这种传播终止是因为 ...
 
-**Abstract State.** The abstract state has three components:
+**抽象状态.** 抽象状态有三个组成部分：
 
-* A partial map from locals to abstract values.  Locals not in the domain of this map are unavailable.  Availability is a generalization of the concept of being initialized.  A local variable may become unavailable subsequent to initialization as a result of being moved.  An abstract value is either *Reference*(*n*) (for variables of reference type) or *Value*(*ns*) (for variables of value type), where *n* is a nonce and *ns* is a set of nonces.  A nonce is a constant used to represent a reference.  Let *Nonce* represent the set of all nonces.  If a local variable *l* is mapped to *Value*(*ns*), it means that there are outstanding borrowed references pointing into the value stored in *l*.  For each member *n* of *ns*, there must be a local variable *l* mapped to *Reference*(*n*).  If a local variable *x* is mapped to *Reference*(*n*) and there are local variables *y* and *z* mapped to *Value*(*ns1*) and *Value*(*ns2*) respectively, then it is possible that *n* is a member of both *ns1* and *ns2*.  This simply means that the analysis is lossy.  The special case when *l* is mapped to *Value*({}) means that there are no borrowed references to *l*, and, therefore, *l* may be destroyed or moved.
-* The partial map from locals to abstract values is not enough by itself to check bytecode programs because values manipulated by the bytecode can be large nested structures with references pointing into the middle.  A reference pointing into the middle of a value could be extended to get another reference.  Some extensions should be allowed but others should not.  To keep track of relative extensions among references, we have a second component to the abstract state.  This component is a map from nonces to one of two kinds of borrow information: either a set of nonces or a map from fields to sets of nonces.  The current implementation stores this information as two separate maps with disjoint domains:
-  1. *borrowed_by* maps from *Nonce* to *Set*<*Nonce*>.
-  2. *fields_borrowed_by* maps from *Nonce* to *Map*<*Field*, *Set*<*Nonce*>>.
-      * If *n2* in *borrowed_by*[*n1*], then it means that the reference represented by *n2* is an extension of the reference represented by *n1*.
-      * If *n2* in *fields_borrowed_by*[*n1*][*f*], it means that the reference represented by *n2* is an extension of the *f*-extension of the reference represented by *n1*.  Based on this intuition, it is a sound overapproximation to move a nonce *n* from the domain of *fields_borrowed_by* to the domain of *borrowed_by* by taking the union of all nonce sets corresponding to all fields in the domain of *fields_borrowed_by*[*n*].
-* To propagate an abstract state across the instructions in a block, the values and references on the stack must also be modeled.  We had earlier described how we model the usable stack suffix as a stack of types.  We now augment the contents of this stack to be a structure containing a type and an abstract value.  We maintain the invariant that non-reference values on the stack cannot have pending borrows on them.  Therefore, if there is an abstract value *Value*(*ns*) on the stack, then *ns* is empty.
+* 从本地到抽象值的部分映射。不在此映射范围内的本地不可用。可用性是初始化概念的概括。由于被移动，局部变量在初始化之后可能变得不可用。抽象值是 *Reference*(*n*)（对于引用类型的变量）或 *Value*(*ns*)（对于值类型的变量），其中*n*是nonce， *ns*是一组nonces。nonce是一个常量，用于表示引用。设 *Nonce* 表示所有nonce的集合。如果局部变量 *l* 映射到 *Value*(*ns*)，则意味着有未完成的引用指向存储在 *l* 中的值。对于 *ns* 中的每个成员 *n*，必须有一个局部变量 *l* 映射到 *Reference*(*n*)。如果局部变量 *x* 映射到 *Reference*(*n*)并且局部变量 *y* 和 *z* 分别映射到 *Value*(*ns1*)和 *Value*(*ns2*) ，那么 *n* 可能是 *ns1* 和 *ns2* 的成员。这仅仅意味着分析是有损的。 *l* 映射到 *Value*（{}）时的特殊情况意味着没有对 *l* 的引用，因此 *l* 可能被销毁或移动。
+* 从本地到抽象值的部分映射，本身不检查字节码程序，因为字节码操做的值可以是大型嵌套结构，引用指向中间。 可以扩展指向值中间的引用以获取另一个引用。 允许一些扩展，但其他扩展不支持。 为了跟踪引用之间的扩展，我们有一个抽象状态的第二个组件。 此组件是从nonce到两种借用信息之一的映射：一组nonce或从字段到nonces组的映射。 当前实现将此信息存储为具有不相交的两个单独的映射：
+  1. *borrowed_by* 从 *Nonce* 映射到 *Set* <*Nonce*>。
+  2. *fields_borrowed_by* 从 *Nonce* 映射到 *Map* <*Field*，*Set* <*Nonce* >>。
+      * 如果 *n2* 在 *borrowed_by* [*n1*]，则表示由 *n2* 表示的引用是由 *n1* 表示的引用的扩展名。
+      * 如果 *fields_borrowed_by* [*n1*][*f*] 中的 *n2*，则由 *n2* 表示的引用是由 *n1* 表示的引用的 *f*  - 扩展后的扩展。 基于这种方式，将一个 nonce *n* 从 *fields_borrowed_by* 的域移动到 *borrowed_by* 的域是一个合理的扩展，通过采用对应于 *fields_borrowed_by* 域中所有字段的所有nonce集的并集[*N*]。
+* 要在块的指令之间传播抽象状态，还必须对堆栈上的值和引用进行创建。 我们之前已经描述了如何将可用堆栈后缀创建为一堆类型。 我们现在将此堆栈的内容扩充为包含类型和抽象值的结构。 我们维护不变量，即堆栈上的非引用值不能对它们进行挂起。 因此，如果堆栈上有一个抽象值 *Value*(*ns*)，则 *ns* 为空。
 
-**Values and References.** Let us take a closer look at how values and references, shared and exclusive, are modeled.
+**值和引用.** 让我们仔细看看共享和独占的值和引用是如何建模的。
 
-* A non-reference value is modeled as *Value*(*ns*) where *ns* is a set of nonces representing borrowed references.  Destruction/move/copy of this value is deemed safe only if *ns* is empty.  Values on the stack trivially satisfy this property, but values in local variables may not.
-* A reference is modeled as *Reference*(*n*), where *n* is a nonce.  If the reference is tagged shared, then read accesses are always allowed and write accesses are never allowed.  If a reference *Reference*(*n*) is tagged exclusive, write access is allowed only if *n* does not have a borrow, and read access is allowed if all nonces that borrow from *n* reside in references that are tagged as shared.  Furthermore, the rules for constructing references guarantee that an extension of a reference tagged shared must also be tagged shared.  Together, these checks provide the property of referential transparency mentioned earlier.
+* 非参考值被建模为 *Value*(*ns*)，其中*ns*是表示借用引用的一组nonce。 仅当*ns*为空时，才会认为此值的销毁/移动/复制是安全的。 堆栈上的值通常满足此属性，但局部变量中的值可能不满足。
+* 引用被建模为*Reference*(*n*)，其中 *n* 是随机数。 如果引用被标记为共享，则始终允许读访问，并且永远不允许写访问。 如果引用 *Reference*(*n*)  被标记为独占，则仅当 *n* 没有借用时才允许写访问，如果从 *n* 借用的所有随机数驻留在被标记的引用中，则允许读访问和共享。 此外，构造引用的规则保证了引用标记共享的扩展也必须被标记为共享。 这些检查共同提供了前面提到的参考透明性。
 
 At the moment, the bytecode language does not contain any direct constructors for shared references. `BorrowLoc` and `BorrowGlobal` create exclusive references.  `BorrowField` creates a reference that inherits its tag from the source reference.  Move (when applied to a local containing a reference) moves the reference from a local variable to the stack.  `FreezeRef` is used to convert an existing exclusive reference to a shared reference. In the future, we may add a version of `BorrowGlobal` that generates a shared reference
 

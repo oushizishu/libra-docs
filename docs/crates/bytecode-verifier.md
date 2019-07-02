@@ -1,12 +1,12 @@
 ---
 id: bytecode-verifier
-title: Bytecode Verifier
-custom_edit_url: https://github.com/libra/libra/edit/master/language/bytecode_verifier/README.md
+title: 字节码验证程序
+custom_edit_url: https://github.com/lbc-team/libra-docs/blob/lbc/docs/crates/bytecode-verifier.md
 ---
 
-### 字节码验证程序：用于检查堆栈使用，类型，资源及引用的安全性
+### 字节码验证程序：用于检查堆栈使用、类型、资源及引用的安全性
 
-编译后的模块中每个函数的主体分别进行单独验证，同时验证信任模块中函数签名的正确性。 检查每个函数签名是否匹配其自定义内容，单独执行验证。 函数体是一系列字节码指令。 这个指令在下面描述的几个阶段中检查。
+编译后的模块中每个函数体分别进行单独验证，同时验证信任模块中函数签名的正确性。 检查每个函数签名是否匹配其自定义内容，单独执行验证。 函数体是一系列字节码指令。 这个指令在下面描述的几个阶段中检查。
 
 ## CFG构建
 
@@ -147,7 +147,7 @@ ReleaseRef(ref) {
 
 上面规则没有说明的一个微妙之处是，当应用于全局引用时，`BorrowField` 和 `FreezeRef` 保持引用计数不变。 原因是因为这些指令消耗了堆栈顶部的引用，同时在堆栈顶部生成了它的扩展。 类似地，由于 `ReadRef` ，`WriteRef`，`Eq`，`Neq` 和 `EmitEvent` 消耗堆栈顶部的引用，它们将引用计数减少1。
 
-## 这个模块组织是怎样的?
+## 这个模块是怎么组织的?
 
 ```text
 *

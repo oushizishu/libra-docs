@@ -282,3 +282,12 @@ blockquote.block_note {
   /* override max width so logo isn't squashed */
   max-width:none;
 }
+
+.button-img {
+  width: 110px;
+  height: 110px;
+}
+
+.copyright a {
+  color: rgba(255, 255, 255, 0.4);
+}

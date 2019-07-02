@@ -15,24 +15,17 @@ function SocialFooter(props) {
 
   return (
     <div className="footerSection">
-      <h5>关注我们</h5>
+      <h5>Libra开发者社区</h5>
       <div className="social">
+      <img className="button-img" src="https://img.learnblockchain.cn/qrcode/xiaona_qrcode2.jpeg" ></img>
         <a
           className="twitter-follow-button" // part of the https://buttons.github.io/buttons.js script in siteConfig.js
-          href={"https://img.learnblockchain.cn/qrcode/xiaona_qrcode2.jpeg"}
+          href={""}
           data-show-count="false"
           aria-label="weixin">
-          备注“Libra”微信群：upchainedu
+          备注 "Libra" 加群
+          
         </a>
-      </div>
-      <div className="social">
-        <a
-          href={"https://www.zhihu.com/people/xiong-li-bing/activities"}
-          className={"twitter-follow-button"}
-          data-show-count={false}>
-            关注知乎
-        </a>
-
       </div>
     </div>
   );
@@ -90,8 +83,10 @@ class Footer extends React.Component {
           {this.props.config.copyright && (
             <span>{this.props.config.copyright}</span>
           )}{' '}
-         Libra 中文文档 | 深入浅出区块链
+         Libra 中文文档 | 深入浅出区块链社区翻译，未经许可请勿转载 | &nbsp; 
+         <script type="text/javascript" src="https://s22.cnzz.com/z_stat.php?id=1265946080&web_id=1265946080"></script>
         </section>
+        
       </footer>
     );
   }

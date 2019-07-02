@@ -19,7 +19,7 @@ custom_edit_url: https://github.com/libra/libra/edit/master/admission_control/RE
        * 然后由vm_validator验证交易。 如果失败，则将相应的VMStatus返回给客户端。
     * 一旦交易通过所有验证，AC将从存储中查询发送人的帐户余额和最新序列号，并将其与客户端请求一起发送到内存池。
     * 如果内存池返回 MempoolAddTransactionStatus :: Valid，则会将AdmissionControlStatus :: Accepted 返回给客户端，表示提交成功。 否则，将相应的AdmissionControlStatus返回给客户端。
-2. 更新最新分布式账本(更新最新分布式账本请求). 在AC中不执行额外的处理。
+2. 更新最新分布式账本(更新最新分布式账本请求). 在准入控制AC中不执行额外的处理。
 * 请求将直接传递到存储进行查询。
 
 ## 文件夹结构

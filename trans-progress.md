@@ -15,7 +15,7 @@
 | docs/crates/admission-control.md          | 完成 | 明杰 | Tiny熊  |  7/02 |
 | docs/move-overview.md        | 待校对 | 明杰 |   |  7/02 |
 | docs/crates/bytecode-verifier.md        | 待校对 | 明杰 |   |  7/02 |
-| docs/crates/consensus.md        | 待校对 | 明杰 |   |  7/03 |
+| docs/crates/consensus.md        | 待校对 | 明杰 | Tiny熊  |  7/03 |
 | docs/crates/crypto.md        | 完成 | 明杰 | Tiny熊  |  7/03 |
 
 

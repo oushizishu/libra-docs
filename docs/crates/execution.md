@@ -4,24 +4,14 @@ title: Execution
 custom_edit_url: https://github.com/libra/libra/edit/master/execution/README.md
 ---
 
-## Overview
+## 概要
 
-The Libra Blockchain is a replicated state machine. Each validator is a replica
-of the system. Starting from genesis state S<sub>0</sub>, each transaction
-T<sub>i</sub> updates previous state S<sub>i-1</sub> to S<sub>i</sub>. Each
-S<sub>i</sub> is a mapping from accounts (represented by 32-byte addresses) to
-some data associated with each account.
+Libra区块链是一个复制的状态机，那么每个验证机中都存在一个副本，从创世区块状态 S<sub>0</sub>, 每一笔交易
+T<sub>i</sub> 将先前状态 S<sub>i-1</sub> 更新为 S<sub>i</sub>. 每
+S<sub>i</sub> 是从帐户（由32字节地址表示）映射到
+与每个帐户关联的一些数据。
 
-The execution component takes the totally ordered transactions, computes the
-output for each transaction via the Move virtual machine, applies the output on
-the previous state, and generates the new state. The execution system cooperates
-with the consensus algorithm &mdash; HotStuff, a leader-based algorithm — to
-help it agree on a proposed set of transactions and their execution. Such a
-group of transactions is a block. Unlike in other blockchain systems, blocks
-have no significance other than being a batch of transactions — every
-transaction is identified by its position within the ledger, which is also
-referred to as its "version". Each consensus participant builds a tree of blocks
-like the following:
+执行之间根据完全有序的交易，通过Move虚拟机来处理每个交易输出，然后将输出应用于先前的状态，并生成一个新的状态，执行组件和共识算法 &mdash; HotStuff 一种基于领导者的算法，协同工作, 帮助它提议一组拟议的交易及其执行达成一致。这样一个交易组是一个块。与其他区块链系统不同，块除了作为一批交易之外没有任何意义 - 每一个交易由其在分类账中的位置来识别，这也是被称为“版本”。 每个共识参与者构建一个块树，如下：
 
 ```
                    ┌-- C
@@ -44,28 +34,14 @@ the block is committed. Each path from the last committed block to an
 uncommitted block forms a valid chain. Regardless of the commit rule of the
 consensus algorithm, there are two possible operations on this tree:
 
-1. Adding a block to the tree using a given parent and extending a specific
-   chain (for example, extending block `F` with the block `G`). When we extend a
-   chain with a new block, the block should include the correct execution
-   results of the transactions in the block as if all its ancestors have been
-   committed in the same order. However, all the uncommitted blocks and their
-   execution results are held in some temporary location and not visible to
-   external clients.
-2. Committing a block. As consensus collects more and more votes on blocks, it
-   decides to commit a block and all its ancestors according to some specific
-   rules. Then we save all these blocks to permanent storage and also discard
-   all the conflicting blocks at the same time.
+1. 使用给定的父节点向树中添加块，并扩展特定的链 (例如，用块' G '扩展块' F ')。当我们扩展a用一个新的区块链，该区块应该包含正确的执行块中交易的结果，就好像它的所有祖先都是按照同样的顺序提交。然而，所有未提交的块和它们的执行结果保存在某个临时位置，对外部客户端不可见。
+2. 提交一个块。随着共识收集到越来越多关于块的选票，它决定根据某些特定的方法提交一个块及其所有祖先规则。然后我们将所有这些块保存到永久存储中，并在同一时间丢弃所有冲突的块。
 
-Therefore, the execution component provides two primary APIs - `execute_block`
-and `commit_block` - to support the above operations.
+因此，执行组件提供了两个主要 api— `execute_block` 和 `commit_block`  -以支持上述操作。
 
-## Implementation Details
+## 实施细节
 
-The state at each version is represented as a sparse Merkle tree in storage.
-When a transaction modifies an account, the account and the siblings from tree
-root to the account is loaded into memory. For example, if we execute a
-transaction T<sub>i</sub> on top of committed state and it modified account `A`,
-we will end up having the following tree:
+每个版本的状态都表示为存储中的稀疏Merkle树。当一个交易提交修改一个帐户时，该帐户和树中的兄弟帐户将根帐户加载到内存中。例如，如果我们执行一个交易 T<sub>i</sub> 在提交状态之前，并修改账户 `A`,我们最终会得到如下的树:
 
 ```
              S_i
@@ -75,10 +51,9 @@ we will end up having the following tree:
          x   A
 ```
 
-where `A` has the new state of the account, and `y` and `x` are the siblings on
-the path from the root to `A` in the tree.  If the next transaction T<sub>i+1</sub>
-modified another account `B` that lives in the subtree at `y`, a new tree will
-be constructed, and the structure will look like the following:
+其中 `A` 具有帐户的新状态，而 `y` 和 `x` 是兄弟节点从根到树中的 `A` 的路径.  如果下一个交易 T<sub>i+1</sub>
+修改了另一个帐户 `B` 它位于 `y` 的子树种, 一棵新的树将会
+构建，结构将如下所示：
 
 ```
                 S_i        S_{i+1}
@@ -91,16 +66,15 @@ be constructed, and the structure will look like the following:
          x   A                      z   B
 ```
 
-Using this structure, we are able to query the global state, taking into account 
-the output of uncommitted transactions. For example, if we want to execute 
-another transaction T<sub>i+1</sub><sup>'</sup>, we can use the tree 
-S<sub>i</sub>. If we look for account A, we can find its new value in the tree. 
-Otherwise, we know the account does not exist in the tree, and we can fall back to 
-storage. As another example, if we want to execute transaction T<sub>i+2</sub>, 
-we can use the tree S<sub>i+1</sub> that has updated values for both account `A` 
-and `B`.
+使用这个结构，我们可以查询全局状态，同时考虑到未提交交易的输出。例如，如果我们想执行
+另一个交易 T<sub>i+1</sub><sup>'</sup>, 我们可以使用树
+S<sub>i</sub>. 如果我们查找帐户A，我们可以在树中找到它的新值。 
+否则，我们知道该帐户不存在于树中，我们可以退回到
+存储。另一个例子，如果我们想执行交易 T<sub>i+2</sub>, 
+我们可以使用树 S<sub>i+1</sub> 它更新了帐户 `A` 
+和 `B` 的值.
 
-## How is this component organized?
+## 这个组件是怎样的？
 
     execution
             └── execution_client   # A Rust wrapper on top of GRPC clients.

@@ -8,7 +8,7 @@ title: Glossary
 
 * * *
 
-### 根哈希累加器
+### 累加器根哈希
 
 * **accumulator root hash** [Merkle 累加器](https://eprint.iacr.org/2009/625.pdf) 的hash root
 
@@ -76,24 +76,24 @@ title: Glossary
 
 * * *
 
-### Client
+### 客户端
 
-A **client** is a piece of software that has the capability to interact with the Libra Blockchain.
+**client** 客户端是一款能够与Libra 区块链进行交互的软件。
 
-* It can allow the user to construct, sign, and submit new transactions to the admission control component of a validator node.
-* It can issue queries to the Libra Blockchain and request the status of a transaction or account.
-* A client can be run by the end-user or on behalf of the end user (for example, for a custodial wallet). 
+* 它可以允许用户构造，签名并将新交易提交给验证器节点的准入控制组件。
+* 它可以向Libra区块链发出查询和请求交易，帐户的状态查询。
+* 客户端可以由最终用户或代表最终用户运行（例如，托管钱包）。 
 
-### Consensus
+### 共识
 
-* **Consensus** is a component of a validator node.  
-* The consensus component is responsible for coordination and agreement amongst all validators on the block of transactions to be executed, their order, and the execution results.
-* The Libra Blockchain is formed with these agreed-upon transactions and their corresponding execution results.
+**Consensus** 共识组件是验证器节点的一个组件。 
+* 共识组件负责所有验证器之间对要执行的交易块、它们的顺序和执行结果的协调和协议。
+* Libra区块链是由这些一致的交易及其相应的执行结果组成的。
 
-### Consensus Protocol
+### 达成一致协议
 
-* A **consensus protocol** is collectively executed by n validator nodes to accept or reject a transaction and to agree on the ordering of transactions and [execution results](#execution-result).
-* See [BFT](#byzantine-fault-tolerance-bft)
+* **consensus protocol** 共识协议是由n个验证器节点共同执行以接受或拒绝交易，并就交易的顺序和 [执行结果](#execution-result) 达成一致.
+* 详见 [BFT](#byzantine-fault-tolerance-bft)
 
 ### Custodial Wallet
 

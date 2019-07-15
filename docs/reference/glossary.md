@@ -21,7 +21,7 @@ title: Glossary
 ### 账户
 
 * **account** 在Libra区块链中，账户是任意数量的 [Move 模块](#move-module) 和 [Move 资源](#move-resources). 的容器。这实际上意味着每个帐户的状态由代码和数据组成。
-* 该帐户由 [账户地址](#account-address) 来作为标识。
+* 该帐户由 [账户地址](#账户地址) 来作为标识。
 
 ### 账户地址
 
@@ -65,7 +65,7 @@ title: Glossary
 
 ### 拜占庭容错(BFT)
 
-* **Byzantine Fault Tolerance** 拜占庭容错（BFT）是分布式系统在存在故障或 “[Byzantine](#byzantine-validator),” 成员低于某个阈值时提供安全和活性保证的能力。
+* **Byzantine Fault Tolerance** 拜占庭容错（BFT）是分布式系统在存在故障或 “[Byzantine](#拜占庭(验证者)),” 成员低于某个阈值时提供安全和活性保证的能力。
 * Libra 区块链使用LibraBFT，这是一个基于 [HotStuff.](#hotstuff)的共识协议。
 * BFT算法通常与许多实体一起操作，它们共同持有N个投票（在系统的Libra应用程序中称为“验证器”）。
 * 选择N作为一个值来计算为了抵御一些持有f票的恶意验证器。

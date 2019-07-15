@@ -8,69 +8,69 @@ title: Glossary
 
 * * *
 
-### Accumulator Root Hash
+### 根哈希累加器
 
-* An **accumulator root hash** is the root hash of a [Merkle accumulator.](https://eprint.iacr.org/2009/625.pdf) 
+* **accumulator root hash** [Merkle 累加器](https://eprint.iacr.org/2009/625.pdf) 的hash root
 
-### Access path
+### 访问路径
 
-* An **access path** specifies the location of a resource or Move module within a specific account.
-* In a state of the Libra Blockchain, an account is represented as a map of access paths to values. The Move VM deserializes this representation into modules and resources.
-* Clients can use access paths to request a resource or a specific piece of data stored inside a resource.
+* **access path** 指定特定帐户中资源或Move模块的位置。
+* 在Libra 区块链的状态中，帐户被表示为值的访问路径的映射。 Move VM将此表示反序列化为模块和资源。
+* 客户端可以使用访问路径来请求资源或存储在资源内的特定数据。
 
-### Account
+### 账户
 
-* An **account** in the Libra Blockchain is a container for an arbitrary number of [Move modules](#move-module) and [Move resources](#move-resources). This essentially means that the state of each account is comprised of both code and data.
-* The account is identified by an [account address](#account-address).
+* **account** 在Libra区块链中，账户是任意数量的 [Move 模块](#move-module) 和 [Move 资源](#move-resources). 的容器。这实际上意味着每个帐户的状态由代码和数据组成。
+* 该帐户由 [账户地址](#account-address) 来作为标识。
 
-### Account Address
+### 账户地址
 
-* The **address** of a Libra account is a 256-bit value.
-* Users can create an address by generating a cryptographic key-pair.
-* The account address is a cryptographic hash of a user's public verification key.
-* There is no limit on the number of addresses a Libra user can create. 
+* **address** Libra账户地址是 256位值。
+* 用户可以通过生成加密密钥对来创建地址。
+* 帐户地址是用户的公钥的加密散列。
+* Libra用户可以创建的地址数量没有限制。
 
-### Admission Control (AC)
+### 准入控制 (AC)
 
-* In Libra Core, **admission control** is the sole external interface to the validator.  Any incoming request (transaction submission or queries) from a client goes through admission control. A client does not have the ability to access the storage, or any other component in the system, without going through AC.  This filters requests and protects the system.
+* **admission control** 在Libra Core中，准入控制是验证器的唯一外部接口。 来自客户端的任何请求（交易提交或查询）都通过准入控制。 客户端不能在不经过AC访问存储或系统中的任何其他组件。 这会过滤请求并保护系统。
 
-* AC is a validator's entry point for all client interactions.  It performs basic validity checks on a submitted transaction. After completing validity checks, it passes the transaction to [mempool](#mempool).
+* AC 是验证者进行所有客户端交互的入口点。 它对提交的交易执行基本有效性检查。 完成有效性检查后，它将交易传递给 [内存池](#mempool).
 
-* A client will use AC for submitting transactions and performing queries (reads).
+* 客户端将使用AC提交交易和执行查询（只读）。
 
-### Authentication Key
+### 密钥验证
 
-* An **authentication key** is used to authenticate the cryptographic key used to sign a transaction. 
-* It is a piece of data stored in the user's account on the blockchain. 
-* Users can rotate their signing key by rotating their authentication key.
+* **authentication key** 用于验证用于签署交易的加密密钥。
+* 它是存储在区块链上用户帐户中的一段数据。
+* 用户可以通过转变身份验证密钥来转变签名密钥。
 
 ## B
 
 * * *
 
-### Block
+### 块
 
-* A **block** is an ordered list of one or more transactions. It is used by validators to reach consensus on the ordering and execution results of the transactions. 
-* Blocks are an internal implementation concept in the Libra Blockchain, i.e., they are not visible to the client. All transactions that are committed to the Libra ledger were part of a block at some point in time, however the blockchain is represented as a sequence of transactions.
+* **block** 是一个或多个交易的有序列表。 验证者使用它来就交易的排序和执行结果达成共识。
+* 块是Libra区块链中的内部实现概念，即它们对客户端不可见。 提交给Libra分类帐的所有交易在某个时间点都是块的一部分，但是区块链表示为一系列交易。
 
-### Blockchain
+### 区块链
 
-* A **blockchain** is a distributed public ledger.
-* The Libra Blockchain is formed with approved transactions and the execution results of those transactions.
+* **blockchain** 是一个分布式公共账本。
+* Libra区块链由批准的交易和这些交易的执行结果组成。
 
-### Byzantine (Validator)
+### 拜占庭(验证者)
 
-* A **validator** that does not follow the specification of the consensus protocol, and wishes to compromise the correct execution of the protocol.
-* BFT algorithms traditionally support up to one-third of the algorithm's voting power being held by Byzantine validators.
+* **validator** 验证者不遵循共识协议的规范，并希望损害协议的正确执行。
+* 传统的BFT算法最多支持拜占庭验证者持有的三分之一的算法投票权。
 
-### Byzantine Fault Tolerance (BFT)
+### 拜占庭容错(BFT)
 
-* **Byzantine Fault Tolerance** (BFT) is the ability of a distributed system to provide safety and liveness guarantees in the presence of faulty, or “[Byzantine](#byzantine-validator),”  members below a certain threshold. 
-* The Libra Blockchain uses LibraBFT, a consensus protocol based on [HotStuff.](#hotstuff)
-* BFT algorithms typically operate with a number of entities, collectively holding N votes (which are called “validators” in the Libra application of the system). 
-* N is chosen to withstand some number of validators holding f votes, which might be malicious.
-* In this configuration, N is typically set to 3f+1. Validators holding up to f votes will be allowed to be faulty &mdash; offline, malicious, slow, etc. As long as 2f+1 votes are held by [honest](#honest-validator) validators, they will be able to reach consensus on consistent decisions.
-* This implies that BFT consensus protocols can function correctly, even if up to one-third of the voting power is held by validator nodes that are compromised, or fail.
+* **Byzantine Fault Tolerance** 拜占庭容错（BFT）是分布式系统在存在故障或 “[Byzantine](#byzantine-validator),” 成员低于某个阈值时提供安全和活性保证的能力。
+* Libra 区块链使用LibraBFT，这是一个基于 [HotStuff.](#hotstuff)的共识协议。
+* BFT算法通常与许多实体一起操作，它们共同持有N个投票（在系统的Libra应用程序中称为“验证器”）。
+* 选择N作为一个值来计算为了抵御一些持有f票的恶意验证器。
+* 在该配置中，N通常设置为3f + 1。 持有f票的验证人将被允许有错误 &mdash; 离线，恶意，缓慢等等。只要 [诚实](#honest-validator) 验证者持有2f + 1票，他们就能够就一致的决策达成共识。
+* 这意味着BFT共识协议可以正常运行，即使被破坏或失败的验证器节点保留多达三分之一的投票权。
 
 ## C
 

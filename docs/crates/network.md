@@ -4,53 +4,34 @@ title: Network
 custom_edit_url: https://github.com/libra/libra/edit/master/network/README.md
 ---
 
-The network component provides peer-to-peer communication primitives to other
-components of a validator.
+网络组件向验证器的其他组件提供点对点网络服务。
 
-## Overview
+## 概要
 
-The network component is specifically designed to facilitate the consensus and
-shared mempool protocols. Currently, it provides these consumers with two
-primary interfaces:
-* RPC, for Remote Procedure Calls; and
-* DirectSend, for fire-and-forget style message delivery to a single receiver.
+网络组件是专门为促进协商一致和共享内存池协议而设计的。目前，它为这些组件提供了两个主要接口:
+* RPC, 用于远程过程调用;
+* DirectSend, 用于向单个接收方发送“即发即忘”样式的消息。
 
-The network component uses:
-* [Multiaddr](https://multiformats.io/multiaddr/) scheme for peer addressing.
-* TCP for reliable transport.
-* [Noise](https://noiseprotocol.org/noise.html) for authentication and full
- end-to-end encryption.
-* [Yamux](https://github.com/hashicorp/yamux/blob/master/spec.md) for
-multiplexing substreams over a single connection; and
-* Push-style [gossip](https://en.wikipedia.org/wiki/Gossip_protocol) for peer
-discovery.
+网络组件使用：
+* [Multiaddr](https://multiformats.io/multiaddr/) 用于对等寻址的方案。
+* TCP 可靠传输。
+* [Noise](https://noiseprotocol.org/noise.html) 用于身份验证和点对点加密。
+* [Yamux](https://github.com/hashicorp/yamux/blob/master/spec.md) 在单个链接上多路复用子流。
+* 推送类型的 [gossip](https://en.wikipedia.org/wiki/Gossip_protocol) 用于对端发现。
 
-Each new substream is assigned a *protocol* supported by both the sender and
-the receiver. Each RPC and DirectSend type corresponds to one such protocol.
+每个新的子流都被分配了一个由发送方和接收方都支持的*协议*。每个RPC和DirectSend类型都对应一个这样的协议。
 
-Only eligible members are allowed to join the inter-validator network. Their
-identity and public key information is provided by the consensus
-component at initialization and on updates to system membership. A new
-validator also needs the network addresses of a few *seed* peers to help it
-bootstrap connectivity to the network. The seed peers first authenticate the
-joining validator as an eligible member and then share their network state
-with it.
+只有符合条件的成员才允许加入内部验证器网络。它们的标识和公钥信息由共识组件在初始化和更新系统成员时提供。一个新的验证器还需要一些*种子*对等点的网络地址，以帮助它引导链接到网络。种子对等节点首先将连接验证器作为合格成员进行身份验证，然后与之共享网络状态。
 
-Each member of the network maintains a full membership view and connects
-directly to any validator it needs to communicate with. A validator that cannot
-be connected to directly is assumed to fall in the quota of Byzantine faults
-tolerated by the system.
+网络中的每个成员都维护一个合法全员视图，并直接连接到需要与之通信的任何验证器。不能直接连接的验证器被认为属于系统所能容忍的拜占庭式故障的范围。
 
-Validator health information, determined using periodic liveness probes, is not
-shared between validators; instead, each validator directly monitors its peers
-for liveness.
+定期使用活动探测器来确定的验证者的状态，信息不在验证器之间共享; 相反，每个验证器直接监视其对等节点的活动状态。
 
-This approach should scale up to a few hundred validators before requiring
-partial membership views, sophisticated failure detectors, or network overlays.
+在完成部分资格成员视图，复杂的故障检测器或网络覆盖之前，此方法应扩展到几百个验证器。
 
-## Implementation Details
+## 实施细节
 
-### System Architecture
+### 系统架构
 
                                  +---------------------+---------------------+
                                  |      Consensus      |       Mempool       |
@@ -64,44 +45,18 @@ partial membership views, sophisticated failure detectors, or network overlays.
     |                                         Peer Manager                   |
     +------------------------------------------------------------------+-----+
 
-The network component is implemented in the
-[Actor](https://en.wikipedia.org/wiki/Actor_model) programming model &mdash;
-i.e., it uses message-passing to communicate between different subcomponents
-running as independent "tasks." The [tokio](https://tokio.rs/) framework is
-used as the task runtime. The different subcomponents in the network component
-are:
+网络组件在 [Actor](https://en.wikipedia.org/wiki/Actor_model) 编程模型中实现 &mdash; 即，它使用消息传递在作为独立“任务”运行的不同子组件之间进行通信。[tokio](https://tokio.rs/) 框架用作任务运行时。网络组件中的不同子组件为:
 
-* **NetworkProvider** &mdash; Exposes network API to clients. It forwards
-requests from upstream clients to appropriate downstream components and sends
-incoming RPC and DirectSend requests to appropriate upstream handlers.
-* **Peer Manager** &mdash; Listens for incoming connections and dials other
-peers on the network. It also notifies other components about new/lost
-connection events and demultiplexes incoming substreams to appropriate protocol
-handlers.
-* **Connectivity Manager** &mdash; Ensures that we remain connected to a node
-if and only if it is an eligible member of the network. Connectivity Manager
-receives addresses of peers from the Discovery component and issues
-dial/disconnect requests to the Peer Manager.
-* **Discovery** &mdash; Uses push-style gossip for discovering new peers and
-updates to addresses of existing peers. On every *tick*, it opens a new
-substream with a randomly selected peer and sends its view of the network to
-this peer. It informs the connectivity manager of any changes to the network
-detected from inbound discovery messages.
-* **Health Checker** &mdash; Performs periodic liveness probes to ensure the
-health of a peer/connection. It resets the connection with the peer if a
-configurable number of probes fail in succession. Probes currently fail on a
-configurable static timeout.
-* **Direct Send** &mdash; Allows sending/receiving messages to/from remote
-peers. It notifies upstream handlers of inbound messages.
-* **RPC** &mdash; Allows sending/receiving RPCs to/from other peers. It notifies
-upstream handlers about inbound RPCs. The upstream handler is passed a channel
-through which can send a serialized response to the caller.
+* **NetworkProvider** &mdash; 向客户端公开网络API。 它将来自上游客户端的请求转发到适当的下游组件，并将传入的RPC和DirectSend请求发送到适当的上游处理程序。
+* **Peer Manager** &mdash; 侦听传入链接并拨号链接网络上的其他对等节点。 它还通知其他组件有关新/丢失的连接事件，并将传入的子流解复用到适当的协议处理程序。
+* **Connectivity Manager** &mdash; 当且仅当它是符合条件的网络成员时，才能确保我们保持与节点的连接。 Connectivity Manager从Discovery组件接收对等方的地址，并向对等管理器发出拨号/断开连接请求。
+* **Discovery** &mdash; 使用推送式来发现新的对等体并更新现有对等体的地址。 在每个*tick*上，它打开一个随机选择的对等体的新子流，并将其网络视图发送给该对等体。 它通知连接管理器从入站发现消息中检测到的对网络的任何更改。
+* **Health Checker** &mdash; 执行定期活动探测以确保对等/连接的健康状况。如果一系列可配置的探测相继失败，它将重置与对等点的连接。探测当前在可配置的静态超时上失败。
+* **Direct Send** &mdash; 允许向/从远程对等点发送/接收消息。它将入站消息通知上游处理程序。
+* **RPC** &mdash; 允许向/从其他对等点发送/接收RPC。 它通知上游处理程序有关入站RPC的信息。 上游处理程序通过一个通道，通过该通道可以向调用者发送序列化响应。
+除了上述子组件之外，网络组件还包括用于执行加密，传输复用，协议协商等的实用程序。
 
-In addition to the subcomponents described above, the network component
-consists of utilities to perform encryption, transport multiplexing, protocol
-negotiation, etc.
-
-## How is this module organized?
+## 这个模块是怎样的？
 ```
 network
 ├── benches                       # network benchmarks

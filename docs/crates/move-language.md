@@ -4,35 +4,35 @@ title: Move Language
 custom_edit_url: https://github.com/libra/libra/edit/master/language/README.md
 ---
 
-Move is a new programming language developed to provide a safe and programmable foundation for the Libra Blockchain.
+Move是一种新的编程语言，旨在为Libra区块链提供安全可编程的基础。
 
-## Organization
+## 组织
 
-The Move language directory consists of five parts:
+Move 语言目录由五个部分组成:
 
-- The [virtual machine](https://github.com/libra/libra/tree/master/language/vm) (VM), which contains the bytecode format, a bytecode interpreter, and infrastructure for executing a block of transactions. This directory also contains the infrastructure to generate the genesis block.
+- [虚拟机](https://github.com/libra/libra/tree/master/language/vm) (VM), 它包含字节码格式、字节码解释器和执行交易块的基础设施。该目录还包含生成创世区块的基础结构
 
-- The [bytecode verifier](https://github.com/libra/libra/tree/master/language/bytecode_verifier), which contains a static analysis tool for rejecting invalid Move bytecode. The virtual machine runs the bytecode verifier on any new Move code it encounters before executing it. The compiler runs the bytecode verifier on its output and surfaces the errors to the programmer.
+- [字节码验证器](https://github.com/libra/libra/tree/master/language/bytecode_verifier), 其中包含一个静态分析工具，用于拒绝无效的Move字节码。虚拟机在执行前遇到的任何新的Move代码上运行字节码验证器。编译器在其输出上运行字节码验证器，并将错误显示给程序员。
 
-- The Move intermediate representation (IR) [compiler](https://github.com/libra/libra/tree/master/language/stdlib), which compiles human-readable program text into Move bytecode. *Warning: the IR compiler is a testing tool. It can generate invalid bytecode that will be rejected by the Move bytecode verifier. The IR syntax is a work in progress that will undergo significant changes.*
+- Move中间层表示 (IR) [compiler](https://github.com/libra/libra/tree/master/language/stdlib), 它将可读的程序文本编译成Move字节码. *警告:IR编译器是一个测试工具。它可以生成将被Move字节码验证器拒绝的无效字节码。IR语法是一个正在进行的工作，将经历重大的变化。*
 
-- The [standard library](https://github.com/libra/libra/tree/master/language/stdlib), which contains the Move IR code for the core system modules such as `LibraAccount` and `LibraCoin`.
+- [标准库](https://github.com/libra/libra/tree/master/language/stdlib), 其中包含 `LibraAccount` 和 `LibraCoin` 等核心系统模块的Move IR代码。
 
-- The [tests](https://github.com/libra/libra/tree/master/language/functional_tests) for the virtual machine, bytecode verifier, and compiler. These tests are written in Move IR and run by a testing framework that parses the expected result of running a test from special directives encoded in comments.
+- [测试](https://github.com/libra/libra/tree/master/language/functional_tests) 用于虚拟机，字节码验证程序和编译器。 这些测试是在Move IR中编写的，由测试框架运行，该测试框架从注释中编码的特殊指令解析运行测试的预期结果。
 
-## How the Move Language Fits Into Libra Core
+## Move语言嵌入Libra Core
 
-Libra Core components interact with the language component through the VM. Specifically, the [admission control](https://github.com/libra/libra/tree/master/admission_control) component uses a limited, read-only [subset](https://github.com/libra/libra/tree/master/vm_validator) of the VM functionality to discard invalid transactions before they are admitted to the mempool and consensus. The [execution](https://github.com/libra/libra/tree/master/execution) component uses the VM to execute a block of transactions.
+Libra Core组件通过VM与语言组件交互。 具体来说， [准入控制](https://github.com/libra/libra/tree/master/admission_control) 组件使用有限的只读 VM 虚拟机的子功能 [子集](https://github.com/libra/libra/tree/master/vm_validator) 在被允许进入内存池并达成共识之前丢弃无效的交易。 [执行](https://github.com/libra/libra/tree/master/execution) 使用VM执行一个交易块。
 
-### Exploring Move IR
+### 认识Move IR
 
-* You can find many small Move IR examples in the [tests](https://github.com/libra/libra/tree/master/language/functional_tests/tests/testsuite). The easiest way to experiment with Move IR is to create a new test in this directory and follow the instructions for runnning the tests.
-* Some more substantial examples can be found in the [standard library](https://github.com/libra/libra/tree/master/language/stdlib/modules). The two most notable ones are [LibraAccount.mvir](https://github.com/libra/libra/blob/master/language/stdlib/modules/libra_account.mvir), which implements accounts on the Libra blockchain, and [LibraCoin.mvir](https://github.com/libra/libra/blob/master/language/stdlib/modules/libra_coin.mvir), which implements Libra coin.
-* The four transaction scripts supported in the Libra testnet are also in the standard library directiory. They are [peer-to-peer transfer](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/peer_to_peer_transfer.mvir), [account creation](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/create_account.mvir), [minting new Libra](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/mint.mvir) (will only work for an account with proper privileges), and [key rotation](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/rotate_authentication_key.mvir).
-* The most complete documention of the Move IR syntax is the [grammar](https://github.com/libra/libra/blob/master/language/compiler/src/parser/mod.rs). You can also take a look at the [parser for the Move IR](https://github.com/libra/libra/blob/master/language/compiler/src/parser/syntax.lalrpop).
-* Check out the [IR compiler README](https://github.com/libra/libra/blob/master/language/compiler/README.md) for more details on writing Move IR code.
+* 你可以在 [测试](https://github.com/libra/libra/tree/master/language/functional_tests/tests/testsuite) 中找到很多小型的Move IR示例.  尝试使用Move IR的最简单方法是在此目录中创建一个新测试，并按照运行测试的说明进行操作。
+* 可以在 [标准库](https://github.com/libra/libra/tree/master/language/stdlib/modules) 中找到更实际的示例。 最值得注意的两个是 [LibraAccount.mvir](https://github.com/libra/libra/blob/master/language/stdlib/modules/libra_account.mvir), 它实现了Libra区块链上的账户, 以及 [LibraCoin.mvir](https://github.com/libra/libra/blob/master/language/stdlib/modules/libra_coin.mvir), 它实现了 Libra coin.
+* Libra testnet支持四个交易脚本也在directiory中。 它们是 [点对点交易](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/peer_to_peer_transfer.mvir), [创建账户](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/create_account.mvir), [铸币 Libra](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/mint.mvir) (仅适用于具有适当权限的帐户), and [密钥轮换](https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/rotate_authentication_key.mvir).
+* Move IR语法最完整的文档是 [语法](https://github.com/libra/libra/blob/master/language/compiler/src/parser/mod.rs). 您还可以查看 [Move IR解释器](https://github.com/libra/libra/blob/master/language/compiler/src/parser/syntax.lalrpop).
+* 查看 [IR 编译器说明文件](https://github.com/libra/libra/blob/master/language/compiler/README.md) 了解有关编写Move IR代码的更多详细信息。
 
-### Directory Organization
+### 目录组织
 
 ```
 ├── README.md          # This README

@@ -15,7 +15,7 @@ custom_edit_url: https://github.com/libra/libra/edit/master/storage/README.md
 
 Libra 区块链可以被视为Merkle树，包含以下组件：
 
-![data](assets/data.png)
+![data](https://developers.libra.org/docs/assets/data.png)
 
 ### 历史分类账
 

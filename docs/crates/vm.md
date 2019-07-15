@@ -4,46 +4,24 @@ title: Virtual Machine
 custom_edit_url: https://github.com/libra/libra/edit/master/language/vm/README.md
 ---
 
-The MoveVM executes transactions expressed in the Move bytecode. There are
-two main crates: the core VM and the VM runtime. The VM core contains the low-level
-data type for the VM - mostly the file format and abstraction over it. A gas
-metering logical abstraction is also defined there.
+MoveVM执行以Move字节码中表示的交易。有两个主要的包:核心VM和VM运行环境。VM核心包含VM的底层数据类型—主要是文件格式和上层的抽象表示。还定义了gas计量抽象逻辑。
 
-## Overview
+## 概要
 
-The MoveVM is a stack machine with a static type system. The MoveVM honors
-the specification of the Move language through a mix of file format,
-verification (for reference [bytcode verifier README](https://github.com/libra/libra/blob/master/language/bytecode_verifier/README.md))
-and runtime constraints. The structure of the file format allows the
-definition of modules, types (resources and unrestricted types), and
-functions. Code is expressed via bytecode instructions, which may have
-references to external functions and types.  The file format also imposes
-certain invariants of the language such as opaque types and private fields.
-From the file format definition it should be clear that modules define a
-scope/namespace for functions and types. Types are opaque given all fields
-are private, and types carry no functions or methods.
+MoveVM是一个带有静态类型系统的堆栈计算机。MoveVM通过混合文件格式、验证 (参考 [bytcode verifier README](https://github.com/libra/libra/blob/master/language/bytecode_verifier/README.md))MoveVM是一个带有静态类型系统的堆栈计算机。MoveVM通过混合文件格式、验证(供参考[bytcode verifier README])和运行时约束来认可的Move语言的规范。文件格式的结构允许定义模块、类型(资源和无限制类型)和函数。代码通过字节码指令来表示，这些指令可能引用外部函数和类型。文件格式还强制使用语言的某些不变量，如隐藏类型和私有字段。从文件格式定义可以清楚地看出，模块为函数和类型定义了范围/名称空间。类型是不透明的，因为所有字段都是私有的，而且类型不带任何函数或方法。
 
-## Implementation Details
+## 实施细节
 
-The MoveVM core crate provides the definition of the file format and all
-utilities related to the file format:
-* A simple Rust abstraction over the file format
-  (`libra/language/vm/src/file_format.rs`) and the bytecodes. These Rust
-  structures are widely used in the code base.
-* Serialization and deserialization of the file format. These define the
-  on-chain binary representation of the code.
-* Some pretty printing functionalities.
-* A proptest infrastructure for the file format.
-* The gas cost/synthesis infrastructure.
+MoveVM核心包提供文件格式的定义以及与文件格式相关的所有实用程序：
+* 一个简单的Rust抽象文件格式 (`libra/language/vm/src/file_format.rs`) 和字节码。这些Rust结构广泛用于代码库中。
+* 文件格式的序列化和反序列化。这些定义了代码的链上二进制表示。
+* 一些漂亮的输出展示功能。
+* 文件格式的基本架构。
+* gas 成本/综合基础设施。
 
-The `CompiledModule` and `CompiledScript` definitions in
-`libra/language/vm/src/file_format.rs` are the top-level structs for a Move
-*Module* or *Transaction Script*, respectively. These structs provide a
-simple abstraction over the file format. Additionally, a set of
-[*Views*](https://github.com/libra/libra/blob/master/language/vm/src/views.rs) are defined to easily navigate and inspect
-`CompiledModule`s and `CompiledScript`s.
+`CompiledModule` 和 `CompiledScript` 在 `libra/language/vm/src/file_format.rs` 中定义，分别是Move *Module* 和 *Transaction Script* 的顶级结构, 这些结构提供了文件格式的简单抽象。此外，还定义了一组 [*Views*](https://github.com/libra/libra/blob/master/language/vm/src/views.rs) 来方便地导航和检查 `CompiledModule` 和 `CompiledScript`。
 
-## Folder Structure
+## 文件夹结构
 
 ```
 .

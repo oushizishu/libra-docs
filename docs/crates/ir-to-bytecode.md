@@ -4,29 +4,17 @@ title: Move IR Compiler
 custom_edit_url: https://github.com/libra/libra/edit/master/language/compiler/README.md
 ---
 
-## Summary
+## 摘要
 
-The Move IR compiler compiles the Move IR down to its bytecode representation. 
+Move IR编译器将Move IR编译为其字节码表示形式。 
 
-## Overview
+## 概要
 
-The Move IR compiler compiles modules and scripts written in Move down to
-their respective bytecode representations. The two data types used to
-represent these outputs are `CompiledModule` and `CompiledScript`. These
-data types are defined in [file_format.rs](https://github.com/libra/libra/blob/master/language/vm/src/file_format.rs).
+Move IR编译器编译使用Move语言编写模块和脚本，以字节码形式表示的，这两种数据类型用于表示这些输出 `CompiledModule` 和 `CompiledScript`. 这些数据类型在 [file_format.rs](https://github.com/libra/libra/blob/master/language/vm/src/file_format.rs) 中有定义.
 
-Beyond translating Move IR to Move bytecode, the compiler's purpose is as a
-testing tool for the bytecode verifier. Because of this, its job is to
-output bytecode programs that correspond as closely as possible to the
-input IR; optimizations and advanced semantic checks are specifically not
-performed during the compilation process. In fact, the compiler goes out of
-its way to push these semantic checks into the bytecode, and compile
-semantically invalid code in the Move IR to equivalent---semantically
-invalid---bytecode programs. The semantics of the compiled bytecode is
-then verified by the [bytecode verifier](https://github.com/libra/libra/blob/master/language/bytecode_verifier/README.md). The compiler command line
-automatically calls the bytecode verifer at the end of compilation.
+Move IR除了把模块和脚本转换为Move字节码之外，编译器的目的也是作为一个字节码验证器的测试工具。 因此，它的工作是输出尽可能与输入IR字节码程序接近; 在编译过程中，不会执行优化和高级语义检查。事实上，编译器会将这些语义检查推入字节码。并在Move IR中将语义上无效的代码编译为等价的—语义上无效的—字节码程序。然后由 [bytecode verifier](https://github.com/libra/libra/blob/master/language/bytecode_verifier/README.md) 验证编译后的字节码的语义. 编译器命令行在编译结束时自动调用字节码验证器。
 
-## Command-line options
+## 命令行选项
 
 ```text
 USAGE:
@@ -46,23 +34,23 @@ ARGS:
     <source_path>    Path to the Move IR source to compile
 ```
 
-### Example Usage
+### 用法示例
 
-To compile a `*.mvir` file:
+编译 `*.mvir` 文件:
 
 > cargo build -—bin compiler
 
-* This will build the compiler+verifier binary.
-* The binary can be found at `libra/target/debug/compiler`.
-* Alternatively, the binary can be run directly with `cargo run -p compiler`.
+* 这将构建编译器+验证器二进制文件。
+* 二进制文件可以在 `libra/target/debug/compiler` 找到.
+* 此外，二进制文件也可以直接使用 `cargo run -p compiler` 运行.
 
-To compile and verify a `*.mvir` module file:
+编译并验证 `*.mvir` 模块文件:
 > `compiler a.mvir`
 
-To compile and verify a `*.mvir` transaction script file:
+编译并验证 `*.mvir` 交易脚本文件:
 > `compiler -s *.mvir`
 
-## Folder Structure
+## 文件夹结构
 
 ```text
  *

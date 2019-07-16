@@ -20,7 +20,7 @@ title: Glossary
 
 ### 账户
 
-* **account** 在Libra区块链中，账户是任意数量的 [Move 模块](#move-module) 和 [Move 资源](#move-resources). 的容器。这实际上意味着每个帐户的状态由代码和数据组成。
+* **account** 在Libra区块链中，账户是任意数量的 [Move模块](#move-模块) 和 [Move资源](#move-资源). 的容器。这实际上意味着每个帐户的状态由代码和数据组成。
 * 该帐户由 [账户地址](#账户地址) 来作为标识。
 
 ### 账户地址
@@ -34,7 +34,7 @@ title: Glossary
 
 * **admission control** 在Libra Core中，准入控制是验证器的唯一外部接口。 来自客户端的任何请求（交易提交或查询）都通过准入控制。 客户端不能在不经过AC访问存储或系统中的任何其他组件。 这会过滤请求并保护系统。
 
-* AC 是验证者进行所有客户端交互的入口点。 它对提交的交易执行基本有效性检查。 完成有效性检查后，它将交易传递给 [内存池](#mempool).
+* AC 是验证者进行所有客户端交互的入口点。 它对提交的交易执行基本有效性检查。 完成有效性检查后，它将交易传递给 [内存池](#内存池).
 
 * 客户端将使用AC提交交易和执行查询（只读）。
 
@@ -69,7 +69,7 @@ title: Glossary
 * Libra 区块链使用LibraBFT，这是一个基于 [HotStuff.](#hotstuff)的共识协议。
 * BFT算法通常与许多实体一起操作，它们共同持有N个投票（在系统的Libra应用程序中称为“验证器”）。
 * 选择N作为一个值来计算为了抵御一些持有f票的恶意验证器。
-* 在该配置中，N通常设置为3f + 1。 持有f票的验证人将被允许有错误 &mdash; 离线，恶意，缓慢等等。只要 [诚实](#honest-validator) 验证者持有2f + 1票，他们就能够就一致的决策达成共识。
+* 在该配置中，N通常设置为3f + 1。 持有f票的验证人将被允许有错误 &mdash; 离线，恶意，缓慢等等。只要 [诚实](#诚实验证者) 验证者持有2f + 1票，他们就能够就一致的决策达成共识。
 * 这意味着BFT共识协议可以正常运行，即使被破坏或失败的验证器节点保留多达三分之一的投票权。
 
 ## C
@@ -92,7 +92,7 @@ title: Glossary
 
 ### 达成一致协议
 
-* **consensus protocol** 共识协议是由n个验证器节点共同执行以接受或拒绝交易，并就交易的顺序和 [执行结果](#execution-result) 达成一致.
+* **consensus protocol** 共识协议是由n个验证器节点共同执行以接受或拒绝交易，并就交易的顺序和 [执行结果](#执行结果) 达成一致.
 * 详见 [拜占庭容错](#拜占庭容错)
 
 ### 保管钱包
@@ -124,38 +124,38 @@ title: Glossary
 
 ### 事件
 
-* An **event** is the user-facing representation of the effects of executing a transaction.
-* A transaction may be designed to emit any number of events as a list. For example, a peer-to-peer payment transaction emits a `SentPaymentEvent` for the sender account and a `ReceivedPaymentEvent` for the recipient account. 
-* In the Libra protocol, events provide evidence that the successful execution of a transaction resulted in a specific effect. The `ReceivedPaymentEvent` (in the above example) allows the recipient to confirm that a payment was received into their account. 
-* Events are persisted on the blockchain and are used to answer queries by [客户端](#客户端).  
+* **event** 事件是执行交易的效果并向用户的表示。
+* 可以将交易设计为以列表的形式发出任意数量的事件。 例如，点对点支付交易为发件人帐户发出 `SentPaymentEvent` 收件人帐户发出 `ReceivedPaymentEvent` . 
+* 在Libra协议中，事件提供了成功执行交易产生特定效果的证据。 `ReceivedPaymentEvent` 在上面的例子中）允许收件人确认他们的帐户收到了付款。
+* 事件在区块链上持久存在，通过 [客户端](#客户端) 查询.  
 
-### Execution Result
+### 执行结果
 
-* Execution result of a transaction is a combination of:
-    * The new state of the set of accounts affected by the transaction.
-    * The events emitted by executing the transaction.
-    * The exit code, which indicates either success or a specific error.
-    * The number of gas units consumed while executing the transaction.
+* 交易的执行结果是以下组合：
+    * 交易执行后的区块链上的新状态。
+    * 通过执行交易发出的事件
+    * 退出代码，表示成功或特定错误。
+    * 执行交易时消耗的gas单位数。
 
-### Expiration Time
+### 到期事件
 
-A transaction ceases to be valid after its **expiration time**. If it is assumed that:
+交易在 **expiration time**.到期时间，后不再有效。如果假设：
 
-* Time_C is the current time that is agreed upon between validators (Time_C is not the local time of the client);
-* Time_E is the expiration time of a transaction T_N; and
-* Time_C > Time_E and transaction T_N has not been included in the blockchain,
+* Time_C是验证者之间达成一致的当前时间（Time_C不是客户端的本地时间）;
+* Time_E是交易T_N的到期时间
+* Time_C> Time_E和交易T_N尚未包含在区块链中，
 
-then there is a guarantee that T_N will never be included in the blockchain.
+然后保证T_N永远不会包含在区块链中。
 
 ## F
 
 * * *
 
-### Faucet
+### 水龙头
 
-* **Faucet** is the way to create Libra currency with no real world value, only on our testnet.
-* The Faucet is a service running along with the testnet. This service only exists to facilitate minting coins for the testnet.
-* You can use the Faucet by sending a request to create coins and transfer them into a given account on your behalf.
+* **Faucet** 水龙头是在测试网上创建没有真正世界价值的Libra Coin的方法。
+* 水龙头是一个与testnet一起运行的服务。 此服务仅用于促进测试网的铸币。
+* 你可以通过使用水龙头发送一个创币的请求，并可以将你将币转到指定的账户。
 
 ## G
 
@@ -163,29 +163,29 @@ then there is a guarantee that T_N will never be included in the blockchain.
 
 ### Gas
 
-* **Gas** is a way to pay for computation and storage on a blockchain network.  All transactions on the Libra network cost a certain amount of gas.
-* The gas required for a transaction depends on the size of the transaction, the computational cost of executing the transaction, and the amount of additional global state created by the transaction (e.g., if new accounts are created).
-* The purpose of gas is regulating demand for the limited computational and storage resources of the validators, including preventing denial of service (DoS) attacks.
+* **Gas** 是一种支付区块链网络计算和存储费用的方法。 Libra网络上的所有交易都需要一定数量的Gas。
+* 交易所需的手续费取决于交易的大小，执行交易的计算成本以及交易创建的额外全局状态的量（例如，如果创建新账户）。
+* Gas的目的是调节对验证器的有限计算和存储资源的需求，包括防止拒绝服务（DoS）攻击。
 
-### Gas Price
+### Gas价格
 
-* Each transaction specifies the **gas price** (in microlibra/gas units) it is willing to pay. 
-* The price of gas required for a transaction depends on the current demand for usage of the network.
-* The **gas cost** (denominated in gas units) is fixed at a point in time.
+* 每笔交易均指明其愿意支付的**Gas价格**（以微/Gas为单位）。
+* 交易所需的Gas价格取决于当前对网络使用的需求。
+* Gas成本（以Gas单位计价）固定在某个时间点。
 
 ## H
 
 * * *
 
-### Honest (Validator)
+### 诚实验证者
 
-* A validator that faithfully executes the consensus protocol and is not Byzantine.
+* 一个忠实地执行共识协议而不是拜占庭式的验证器。
 
 ### HotStuff
 
-* **HotStuff** is a recent proposal for a [BFT](#byzantine-fault-tolerance-bft) consensus protocol. 
-* LibraBFT, Libra's consensus algorithm, is based on HotStuff.
-* It simplifies the reasoning about safety, and it addresses some performance limitations of previous consensus protocols.
+* **HotStuff** 是最新的 [拜占庭容错](#拜占庭容错) 共识协议的提案。
+* Libra的共识算法LibraBFT基于HotStuff。
+* 它简化了安全性的推理，并解决了先前共识协议的一些性能限制。
 
 ## L
 
@@ -193,74 +193,74 @@ then there is a guarantee that T_N will never be included in the blockchain.
 
 ### LBR
 
-* **LBR** is the abbreviation for Libra currency.
+* **LBR** 是Libra货币的缩写
 
-### Leader
+### 领导者
 
-* A **leader** is a validator node that proposes a block of transactions for the consensus protocol.
-* In leader-based protocols, nodes must agree on a leader to make progress.
-* Leaders are selected by a function that takes the current [round number](https://fb.quip.com/LkbMAEBIVNbh#ffYACAO6CzD) as input. 
+* **leader** 领导者是一个验证者节点，它为共识协议提出一个交易块。
+* 在基于领导者的协议中，节点必须就领导者达成一致才能取得进展。
+* 领导者由一个函数选择，该函数将当前 [round number](https://fb.quip.com/LkbMAEBIVNbh#ffYACAO6CzD) 作为输入。
 
-### Libra (The Currency)
+### Libra （货币）
 
-* **Libra** is a global digital currency.
-* It is stored on the Libra Blockchain.
-* It is backed by a reserve of assets.
-* It is governed by the independent Libra Association.
+* **Libra** 是一种全球数字货币。
+* 它存储在Libra 区块链上。
+* 由资产储备支持。
+* 由独立的Libra协会管理。
 
-### Libra Association
+### Libra 协会
 
-* The **Libra Association** is an independent, not-for-profit membership organization, headquartered in Geneva, Switzerland. The association's purpose is to coordinate and provide a framework for governance of the network and reserve. 
-* The association is created by the validator nodes who will run on the Libra network.
-* Refer to the [Libra white paper](https://libra.org/en-us/whitepaper) for the a description of the mission, vision, and purview of the Libra Association.
+* **Libra Association** Libra 协会是一个独立的、非盈利的会员组织，总部设在瑞士日内瓦。协会的宗旨是协调和提供一个网络和储备管理框架。
+* 关联由将在Libra网络上运行的验证器节点创建。
+* 有关Libra协会的使命，愿景和权限的说明，请参阅 [Libra white paper](https://libra.org/en-us/whitepaper).
 
-### Libra Association Council
+### Libra 协会理事会
 
-* Libra Association Council is the governing body of the Libra Association.
-* Libra Association Council is part of the Libra Association.
+* Libra 协会理事会是Libra协会的理事机构。
+* Libra 协会理事会是Libra协会的一部分。
 
 ### LibraBFT
 
-* LibraBFT is the Libra protocol's BFT consensus algorithm.
-* LibraBFT is based on HotStuff.
+* LibraBFT是Libra协议的BFT一致性算法。
+* LibraBFT基于HotStuff。
 
-### Libra Blockchain
+### Libra 区块链
 
-* The **Libra Blockchain** is a ledger of immutable transactions agreed upon by the validator nodes on the Libra network (the network of validator nodes).
+* **Libra 区块链** 是由Libra网络（验证器节点网络）上的验证器节点商定的不可篡改的分布式分帐本。
 
 ### Libra Core
 
-* **Libra Core** is the official name for the open-source implementation of the Libra protocol published by the Libra Association.
-* This software is the first implementation of the Libra protocol and the Move language. 
-* Libra Core includes both validator and client functionalities.
+* **Libra Core** 是Libra 协会发布的Libra协议的开源实现软件的官方名称。
+* 该软件是Libra协议和Move语言的第一个实现。
+* Libra Core 包括验证器和客户端功能。
 
-### Libra Protocol
+### Libra 协议
 
-* **Libra protocol** is the specification of how transactions are submitted, ordered, executed, and recorded within the Libra ecosystem.
+* **Libra 协议** 是在Libra生态系统中如何提交，订购，执行和记录交易的规范。
 
-### Libra Reserve
+### Libra 储备
 
-* **Libra reserve** is the total monetary holdings that back Libra.
-* To be a validator node for the Libra Association, it is a requirement to invest in the reserve.
+* **Libra reserve** Libra 储备是支持Libra的总货币持有量。
+* 要成为Libra协会的验证器节点，就必须对储备进行投资。
 
 ### LibraAccount.T
 
-* A **`LibraAccount.T`** is a Move resource that holds all the administrative data associated with an account, such as sequence number, balance, and authentication key.
-*  A **`LibraAccount.T`** is the only resource that every account is guaranteed to contain.
+* **`LibraAccount.T`** 是一个Move资源，它包含与帐户关联的所有管理数据，例如序列号，余额和身份验证密钥。
+* **`LibraAccount.T`** 是保证每个帐户包含的唯一资源。
 
-### LibraAccount module
+### LibraAccount 模块
 
-* **The LibraAccount module** is a Move module that contains the code for manipulating the administrative data held in a particular `LibraAccount.T` resource.
-* Code for checking or incrementing sequence numbers, withdrawing or depositing currency, and extracting gas deposits is included in the LibraAccount module. 
+* **The LibraAccount 模块** 是一个Move模块，其中包含用于操作特定`LibraAccount.T`资源中保存的管理数据的代码。
+* LibraAccount模块中包含用于检查或递增序列号，提取或存入货币以及提取gas存量的代码。
 
 ### Libra testnet 
 
-* See [testnet](#testnet).
+* 详见 [testnet](#testnet).
 
 ## M
 
 * * *
-### mainnet
+### 主网
 
 * The Libra mainnet is the main network of the Libra Blockchain with a digital currency known as [Libra](#libra). 
 * The Libra currency on mainnet will be backed by a reserve of assets.
@@ -272,7 +272,7 @@ then there is a guarantee that T_N will never be included in the blockchain.
 * The gas charged is equal to the gas price multiplied by units of work required to process this transaction. If the result is less than the max gas amount, the transaction has been successfully executed.
 * If the transaction runs out of gas while it is being executed or the account runs out of balance during execution, then the sender will be charged for gas used and the transaction will fail. 
 
-### Mempool
+### 内存池
 
 * **Mempool** is one of the components of the validator node. It holds an in-memory buffer of transactions that have been submitted but not yet agreed upon and executed. Mempool receives transactions from [admission control](#admission-control).
 * Transactions in the mempool of a validator are added from the admission control (AC) of the current validator and from the mempool of other validators.
@@ -303,13 +303,13 @@ then there is a guarantee that T_N will never be included in the blockchain.
 * Move programs are compiled into Move bytecode.
 * Move bytecode is used to express transaction scripts and Move modules.
 
-### Move Module
+### Move模块
 
 * A **Move module** defines the rules for updating the global state of the Libra Blockchain. 
 * In the Libra protocol, a Move module is a **smart contract**.
 * Each user-submitted transaction includes a transaction script. The transaction script invokes procedures of one or more Move modules to update the global state of the blockchain according to the rules.
 
-### Move Resources
+### Move资源
 
 * **Move resources** contain data that can be accessed according to the **procedures** declared in a Move **module.**
 * Move resources can never be copied, reused, or lost. This protects Move programmers from accidentally or intentionally losing track of a resource.

@@ -105,7 +105,7 @@ title: Glossary
 
 ### 数字货币
 
-* *Alternate name:* 加密数字货币。
+* *替代名称:* 加密数字货币。
 * Libra上一种数字货币的类型。
 
 ## E
@@ -137,7 +137,7 @@ title: Glossary
     * 退出代码，表示成功或特定错误。
     * 执行交易时消耗的gas单位数。
 
-### 到期事件
+### 到期时间
 
 交易在 **expiration time**.到期时间，后不再有效。如果假设：
 
@@ -419,9 +419,9 @@ title: Glossary
 
 ### 交易脚本
 
-* Each transaction submitted by a user includes a **transaction script**.
+* 用户提交的每个交易都包括**交易脚本**。
 * It represents the operation a client submits to a validator node.  
-* The operation could be a request to move coins from user A to user B, or it could involve interactions with published [Move modules](#move-modules)/smart contracts.
+* The operation could be a request to move coins from user A to user B, or it could involve interactions with published [Move模块](#move模块)/smart contracts.
 * The transaction script is an arbitrary program that interacts with resources published in the global storage of the Libra Blockchain by calling the procedures of a module. It encodes the logic for a transaction.
 * A single transaction script can send funds to multiple recipients and invoke procedures from several different modules.
 * A transaction script **is not** stored in the global state and cannot be invoked by other transaction scripts. It is a single-use program.

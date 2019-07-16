@@ -63,9 +63,9 @@ title: Glossary
 * **validator** 验证者不遵循共识协议的规范，并希望损害协议的正确执行。
 * 传统的BFT算法最多支持拜占庭验证者持有的三分之一的算法投票权。
 
-### 拜占庭容错(BFT)
+### 拜占庭容错
 
-* **Byzantine Fault Tolerance** 拜占庭容错（BFT）是分布式系统在存在故障或 “[Byzantine](#拜占庭(验证者)),” 成员低于某个阈值时提供安全和活性保证的能力。
+* **Byzantine Fault Tolerance** 拜占庭容错（BFT）是分布式系统在存在故障或 “[拜占庭(验证者)](#拜占庭(验证者)),” 成员低于某个阈值时提供安全和活性保证的能力。
 * Libra 区块链使用LibraBFT，这是一个基于 [HotStuff.](#hotstuff)的共识协议。
 * BFT算法通常与许多实体一起操作，它们共同持有N个投票（在系统的Libra应用程序中称为“验证器”）。
 * 选择N作为一个值来计算为了抵御一些持有f票的恶意验证器。
@@ -93,20 +93,20 @@ title: Glossary
 ### 达成一致协议
 
 * **consensus protocol** 共识协议是由n个验证器节点共同执行以接受或拒绝交易，并就交易的顺序和 [执行结果](#execution-result) 达成一致.
-* 详见 [BFT](#拜占庭容错(BFT))
+* 详见 [拜占庭容错](#拜占庭容错)
 
-### Custodial Wallet
+### 保管钱包
 
-* In a **custodial wallet** model, the  wallet product takes custody of customers' funds and private keys. 
+* **custodial wallet** 在保管钱包模型中，钱包负责保管客户的资金和私钥。
 
 ## D
 
 * * *
 
-### Digital currency
+### 数字货币
 
-* *Alternate name:* Cryptocurrency
-* The type of money Libra is.
+* *Alternate name:* 加密数字货币。
+* Libra上一种数字货币的类型。
 
 ## E
 
@@ -114,20 +114,20 @@ title: Glossary
 
 ### Ed25519
 
-* **Ed25519** is our supported digital signature scheme. 
-* More specifically, Libra uses the PureEdDSA scheme over the Ed25519 curve, as defined in RFC 8032.
+* **Ed25519** 是我们支持的数字签名方案。 
+* 更具体地说，Libra在Ed25519曲线上使用PureEdDSA方案，如RFC 8032中所定义。
 
-### Epoch
+### 时期
 
-* An **epoch** is a period of time during which an instance of the consensus protocol runs with a fixed set of validators and voting rights.
-* To change the set of validators and/or their voting rights, the current epoch ends with the commit of a special/administrative smart contract transaction and a new one is started.
+* **epoch** 时期是一段时间，在该时间段内，共识协议的实例与一组固定的验证者和投票权一起运行。
+* 要更改验证器和/或其投票权的集合，当前时期提交特殊/管理智能合约交易结束，并启动新的。
 
-### Event
+### 事件
 
 * An **event** is the user-facing representation of the effects of executing a transaction.
 * A transaction may be designed to emit any number of events as a list. For example, a peer-to-peer payment transaction emits a `SentPaymentEvent` for the sender account and a `ReceivedPaymentEvent` for the recipient account. 
 * In the Libra protocol, events provide evidence that the successful execution of a transaction resulted in a specific effect. The `ReceivedPaymentEvent` (in the above example) allows the recipient to confirm that a payment was received into their account. 
-* Events are persisted on the blockchain and are used to answer queries by [clients](#client).  
+* Events are persisted on the blockchain and are used to answer queries by [客户端](#客户端).  
 
 ### Execution Result
 

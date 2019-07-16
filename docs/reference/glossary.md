@@ -93,7 +93,7 @@ title: Glossary
 ### 达成一致协议
 
 * **consensus protocol** 共识协议是由n个验证器节点共同执行以接受或拒绝交易，并就交易的顺序和 [执行结果](#execution-result) 达成一致.
-* 详见 [BFT](#byzantine-fault-tolerance-bft)
+* 详见 [BFT](#拜占庭容错(bft))
 
 ### Custodial Wallet
 
